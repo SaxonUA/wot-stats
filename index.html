@@ -58,8 +58,14 @@
       try {
         const data = await fetchData();
         const rows = data.rows;
-        const valueC3 = Number(rows[0].c[2].v);   // C3
-        document.getElementById("cellC3").innerText = valueC3.toLocaleString();
+        const cell = rows[2]?.c[2]; // C3 знаходиться у рядку 3 (індекс 2), стовпець 3 (індекс 2)
+
+        if (cell && cell.v !== null) {
+          const valueC3 = Number(cell.v);
+          document.getElementById("cellC3").innerText = valueC3.toLocaleString();
+        } else {
+          document.getElementById("cellC3").innerText = "Порожньо";
+        }
       } catch (err) {
         console.error(err);
         document.getElementById("cellC3").innerText = "Помилка";
