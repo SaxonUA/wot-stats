@@ -62,8 +62,9 @@
     async function updateUI() {
       try {
         const data = await fetchData();
-        const remaining = data.rows[2].c[6].v;
-        const damaged = data.rows[2].c[2].v;
+        const row = data.rows[0];
+        const remaining = row.c[6].v;
+        const damaged = row.c[2].v;
 
         document.getElementById("remaining").innerText = remaining.toLocaleString();
         document.getElementById("damaged").innerText = damaged.toLocaleString();
