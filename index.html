@@ -40,6 +40,9 @@
   <div class="block">
     <div class="label">ТЕСТ C3</div>
     <div class="value" id="cellC3">Завантаження...</div>
+
+    <div class="label">ТЕСТ G3</div>
+    <div class="value" id="cellG3">Завантаження...</div>
   </div>
 
   <script>
@@ -58,17 +61,27 @@
       try {
         const data = await fetchData();
         const rows = data.rows;
-        const cell = rows[2]?.c[2]; // C3 знаходиться у рядку 3 (індекс 2), стовпець 3 (індекс 2)
 
-        if (cell && cell.v !== null) {
-          const valueC3 = Number(cell.v);
+        const cellC3 = rows[2]?.c[2]; // C3
+        const cellG3 = rows[2]?.c[6]; // G3
+
+        if (cellC3 && cellC3.v !== null) {
+          const valueC3 = Number(cellC3.v);
           document.getElementById("cellC3").innerText = valueC3.toLocaleString();
         } else {
           document.getElementById("cellC3").innerText = "Порожньо";
         }
+
+        if (cellG3 && cellG3.v !== null) {
+          const valueG3 = Number(cellG3.v);
+          document.getElementById("cellG3").innerText = valueG3.toLocaleString();
+        } else {
+          document.getElementById("cellG3").innerText = "Порожньо";
+        }
       } catch (err) {
         console.error(err);
         document.getElementById("cellC3").innerText = "Помилка";
+        document.getElementById("cellG3").innerText = "Помилка";
       }
     }
 
