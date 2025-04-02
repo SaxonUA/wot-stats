@@ -1,58 +1,83 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <title>Очки донатів</title>
+  <meta charset="UTF-8">
+  <title>Stream Stats</title>
   <style>
     body {
-      background-color: transparent;
+      margin: 0;
       font-family: 'Arial', sans-serif;
+      background: rgba(0, 0, 0, 0);
       color: white;
-      font-size: 42px;
       text-align: center;
-      padding-top: 30px;
-      text-shadow: 2px 2px 5px black;
     }
-    .counter {
-      font-size: 60px;
+    .panel {
+      background: linear-gradient(135deg, #ff6600, #ff3300);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+      width: 600px;
+      margin: 20px auto;
+    }
+    .title {
+      font-size: 28px;
       font-weight: bold;
-      color: #00ffcc;
-      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .value {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+    .small {
+      font-size: 18px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <div>Очки за донати</div>
-  <div class="counter" id="points">Завантаження...</div>
+  <div class="panel">
+    <div class="title">ЗАЛИШИЛОСЬ</div>
+    <div class="value" id="left">Завантаження...</div>
+
+    <div class="title">НАСТРІЛЯНО</div>
+    <div class="value" id="done">Завантаження...</div>
+
+    <div class="small">+50 урону за 1 грн</div>
+  </div>
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const SHEET_GID = "1630188258";
-    const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
+    const GID_DAMAGE = "0"; // Аркуш1, урон
+    const GID_DONATE = "1395914915"; // донат
 
-    fetch(URL)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const rows = json.table.rows;
-
-        let totalUron = 0;
-        rows.forEach(row => {
-          const cell = row.c[2];
-          if (cell && cell.v) {
-            const sum = parseFloat(cell.v);
-            if (sum >= 25) totalUron += 1250;
-            else if (sum >= 10) totalUron += 500;
-          }
-        });
-
-        document.getElementById("points").textContent = totalUron.toLocaleString("uk-UA");
-      })
-      .catch(err => {
-        document.getElementById("points").textContent = "Помилка";
-        console.error(err);
+    async function getValue(gid, col) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.substr(47).slice(0, -2));
+      let sum = 0;
+      json.table.rows.forEach(row => {
+        const cell = row.c[col];
+        if (cell && cell.v) sum += Number(cell.v);
       });
+      return sum;
+    }
+
+    async function updateStats() {
+      const damage = await getValue(GID_DAMAGE, 3); // стовпець D = 3
+      const donations = await getValue(GID_DONATE, 2); // стовпець C = 2
+      const bonus = donations * 50;
+      const target = 100000;
+      const total = damage + bonus;
+      const left = Math.max(0, target - total);
+
+      document.getElementById("done").textContent = total.toLocaleString("uk-UA");
+      document.getElementById("left").textContent = left.toLocaleString("uk-UA");
+    }
+
+    updateStats();
+    setInterval(updateStats, 30000); // оновлення кожні 30 сек
   </script>
 </body>
 </html>
