@@ -38,13 +38,8 @@
 </head>
 <body>
   <div class="block">
-    <div class="label">ЗАЛИШИЛОСЬ</div>
-    <div class="value" id="remaining">Завантаження...</div>
-
-    <div class="label">НАСТРІЛЯНО</div>
-    <div class="value" id="damaged">Завантаження...</div>
-
-    <div class="note">+50 урону за 1 грн</div>
+    <div class="label">ТЕСТ C3</div>
+    <div class="value" id="cellC3">Завантаження...</div>
   </div>
 
   <script>
@@ -63,15 +58,11 @@
       try {
         const data = await fetchData();
         const rows = data.rows;
-        const damaged = Number(rows[0].c[2].v);   // C3
-        const remaining = Number(rows[0].c[6].v); // G3
-
-        document.getElementById("damaged").innerText = damaged.toLocaleString();
-        document.getElementById("remaining").innerText = remaining.toLocaleString();
+        const valueC3 = Number(rows[0].c[2].v);   // C3
+        document.getElementById("cellC3").innerText = valueC3.toLocaleString();
       } catch (err) {
         console.error(err);
-        document.getElementById("remaining").innerText = "Помилка";
-        document.getElementById("damaged").innerText = "Помилка";
+        document.getElementById("cellC3").innerText = "Помилка";
       }
     }
 
