@@ -13,12 +13,12 @@
       padding: 0;
     }
     .container {
-      background-color: rgba(0, 0, 0, 0.5); /* Ледь помітний чорний */
+      background-color: rgba(0, 0, 0, 0.5);
       border-radius: 20px;
       padding: 20px 40px;
       width: fit-content;
       margin: 30px auto;
-      box-shadow: 0 0 25px rgba(0,0,0,0.8);
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
     }
     .line {
       display: flex;
@@ -39,6 +39,7 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 10px;
     }
     .value {
       font-size: 38px;
@@ -47,13 +48,15 @@
       background: repeating-linear-gradient(45deg, rgba(255,255,255,0.25), rgba(255,255,255,0.25) 10px, transparent 10px, transparent 20px);
       padding: 5px 15px;
       border-radius: 5px;
-      margin-right: 10px;
     }
-    .icon {
-      margin: 0;
+    .icon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 60px;
     }
     .icon-pricil {
-      height: 60px;
+      height: 50px;
     }
     .icon-kr {
       height: 40px;
@@ -79,8 +82,10 @@
         <div class="title">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ</div>
       </div>
       <div class="value-block">
-        <img src="pricil.png" class="icon icon-pricil">
         <div class="value" id="cellG3">...</div>
+        <div class="icon-wrapper">
+          <img src="pricil.png" class="icon-pricil">
+        </div>
       </div>
     </div>
 
@@ -91,8 +96,10 @@
         <div class="title">ВЖЕ<br>ВИКОНАНО</div>
       </div>
       <div class="value-block">
-        <img src="kr.png" class="icon icon-kr">
         <div class="value" id="cellC3">...</div>
+        <div class="icon-wrapper">
+          <img src="kr.png" class="icon-kr">
+        </div>
       </div>
     </div>
 
@@ -103,7 +110,7 @@
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const GID = "1630188258"; // Аркуш "WOT"
+    const GID = "1630188258";
 
     async function fetchData() {
       const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${GID}`;
@@ -118,8 +125,8 @@
         const data = await fetchData();
         const rows = data.rows;
 
-        const cellC3 = rows[2]?.c[2]; // C3
-        const cellG3 = rows[2]?.c[6]; // G3
+        const cellC3 = rows[2]?.c[2];
+        const cellG3 = rows[2]?.c[6];
 
         document.getElementById("cellC3").innerText = cellC3?.v?.toLocaleString() || "0";
         document.getElementById("cellG3").innerText = cellG3?.v?.toLocaleString() || "0";
