@@ -38,17 +38,12 @@
 </head>
 <body>
   <div class="block">
-    <div class="label">ЗАЛИШИЛОСЬ</div>
-    <div class="value" id="remaining">Завантаження...</div>
-
-    <div class="label">НАСТРІЛЯНО</div>
-    <div class="value" id="damaged">Завантаження...</div>
-
-    <div class="note">+50 урону за 1 грн</div>
+    <div class="label">ТЕСТ C3</div>
+    <div class="value" id="testC3">Завантаження...</div>
   </div>
 
   <script>
-    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcK6Sr-Xoo6Sscu6SyS6JSS3r9k";
     const GID = "1630188258";
 
     async function fetchData() {
@@ -62,20 +57,18 @@
     async function updateUI() {
       try {
         const data = await fetchData();
-        const row = data.rows[0];
-        const remaining = row.C[3].v; // G3
-        const damaged = row.G[3].v;   // B3
+        const row = data.rows[2]; // рядок C3 — це третій (індексація з 0)
+        const c3value = row.c[2].v; // C — це третя колонка (індекс 2)
 
-        document.getElementById("remaining").innerText = remaining.toLocaleString();
-        document.getElementById("damaged").innerText = damaged.toLocaleString();
-      } catch {
-        document.getElementById("remaining").innerText = "Помилка";
-        document.getElementById("damaged").innerText = "Помилка";
+        document.getElementById("testC3").innerText = Number(c3value).toLocaleString();
+      } catch (err) {
+        console.error(err);
+        document.getElementById("testC3").innerText = "Помилка";
       }
     }
 
     updateUI();
-    setInterval(updateUI, 15000); // оновлення кожні 15 сек
+    setInterval(updateUI, 15000);
   </script>
 </body>
 </html>
