@@ -50,7 +50,6 @@
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcK6Sr-Xoo6Sscu6SyS6JSS3r9k";
     const REMAIN_GID = "1798310371"; // G3 (залишилось)
-    const DAMAGE_GID = "0";          // Стовпець D (шкода)
 
     async function fetchData(gid) {
       const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${gid}`;
@@ -64,20 +63,12 @@
       try {
         const remainData = await fetchData(REMAIN_GID);
         const remaining = remainData.rows[2].c[6].v;
+        const damaged = remainData.rows[2].c[2].v;
+
         document.getElementById("remaining").innerText = remaining.toLocaleString();
+        document.getElementById("damaged").innerText = damaged.toLocaleString();
       } catch {
         document.getElementById("remaining").innerText = "Помилка";
-      }
-
-      try {
-        const damageData = await fetchData(DAMAGE_GID);
-        let totalDamage = 0;
-        damageData.rows.forEach(r => {
-          const cell = r.c[3];
-          if (cell && !isNaN(cell.v)) totalDamage += parseInt(cell.v);
-        });
-        document.getElementById("damaged").innerText = totalDamage.toLocaleString();
-      } catch {
         document.getElementById("damaged").innerText = "Помилка";
       }
     }
