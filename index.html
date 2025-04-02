@@ -56,27 +56,26 @@
       const res = await fetch(URL);
       const text = await res.text();
       const json = JSON.parse(text.substring(47).slice(0, -2));
-      return json.table;
+      return json.table.rows;
     }
 
     async function updateUI() {
       try {
-        const data = await fetchData();
-        const row = data.rows[0]; // Перший рядок
-        const damaged = row.c[2].v;   // C3 (індекс 2)
-        const remaining = row.c[6].v; // G3 (індекс 6)
+        const rows = await fetchData();
+        const damaged = Number(rows[2].c[2].v); // C3 (Аркуш3!C3)
+        const remaining = Number(rows[2].c[6].v); // G3 (Аркуш3!G3)
 
-        document.getElementById("remaining").innerText = Number(remaining).toLocaleString();
-        document.getElementById("damaged").innerText = Number(damaged).toLocaleString();
+        document.getElementById("damaged").innerText = damaged.toLocaleString();
+        document.getElementById("remaining").innerText = remaining.toLocaleString();
       } catch (err) {
         console.error(err);
-        document.getElementById("remaining").innerText = "Помилка";
         document.getElementById("damaged").innerText = "Помилка";
+        document.getElementById("remaining").innerText = "Помилка";
       }
     }
 
     updateUI();
-    setInterval(updateUI, 15000); // оновлення кожні 15 сек
+    setInterval(updateUI, 15000);
   </script>
 </body>
 </html>
