@@ -63,8 +63,8 @@
       try {
         const data = await fetchData();
         const rows = data.rows;
-        const damaged = Number(rows[2].c[2].v);   // C3
-        const remaining = Number(rows[2].c[6].v); // G3
+        const damaged = Number(rows[0].c[2].v);   // C3
+        const remaining = Number(rows[0].c[6].v); // G3
 
         document.getElementById("damaged").innerText = damaged.toLocaleString();
         document.getElementById("remaining").innerText = remaining.toLocaleString();
