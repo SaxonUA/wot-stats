@@ -1,17 +1,89 @@
-<script>
-const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-const SHEET_GID = "1630188258";  // ВАЖЛИВО: правильний GID
-const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <title>WOT донати</title>
+  <style>
+    body {
+      background-color: transparent;
+      font-family: 'Arial', sans-serif;
+      color: white;
+      text-align: center;
+      padding-top: 30px;
+      text-shadow: 2px 2px 5px black;
+    }
+    .block {
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+      padding: 30px;
+      border-radius: 20px;
+      width: 400px;
+      margin: auto;
+      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+    .label {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .value {
+      font-size: 52px;
+      color: cyan;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .note {
+      font-size: 16px;
+      color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="block">
+    <div class="label">ЗАЛИШИЛОСЬ</div>
+    <div class="value" id="remaining">Завантаження...</div>
 
-fetch(URL)
-  .then(res => res.text())
-  .then(text => {
-    const json = JSON.parse(text.substring(47).slice(0, -2));
-    const value = json.table.rows[2].c[6].v; // G3: рядок 3 (індекс 2), стовпець G (індекс 6)
-    document.getElementById("points").innerText = value;
-  })
-  .catch(err => {
-    document.getElementById("points").innerText = "Помилка";
-    console.error("❌ Помилка при отриманні даних:", err);
-  });
-</script>
+    <div class="label">НАСТРІЛЯНО</div>
+    <div class="value" id="damaged">Завантаження...</div>
+
+    <div class="note">+50 урону за 1 грн</div>
+  </div>
+
+  <script>
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcK6Sr-Xoo6Sscu6SyS6JSS3r9k";
+    const REMAIN_GID = "1798310371"; // G3 (залишилось)
+    const DAMAGE_GID = "0";          // Стовпець D (шкода)
+
+    async function fetchData(gid) {
+      const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${gid}`;
+      const res = await fetch(URL);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      return json.table;
+    }
+
+    async function updateUI() {
+      try {
+        const remainData = await fetchData(REMAIN_GID);
+        const remaining = remainData.rows[2].c[6].v;
+        document.getElementById("remaining").innerText = remaining.toLocaleString();
+      } catch {
+        document.getElementById("remaining").innerText = "Помилка";
+      }
+
+      try {
+        const damageData = await fetchData(DAMAGE_GID);
+        let totalDamage = 0;
+        damageData.rows.forEach(r => {
+          const cell = r.c[3];
+          if (cell && !isNaN(cell.v)) totalDamage += parseInt(cell.v);
+        });
+        document.getElementById("damaged").innerText = totalDamage.toLocaleString();
+      } catch {
+        document.getElementById("damaged").innerText = "Помилка";
+      }
+    }
+
+    updateUI();
+    setInterval(updateUI, 15000); // оновлення кожні 15 сек
+  </script>
+</body>
+</html>
