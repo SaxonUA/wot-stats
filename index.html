@@ -2,82 +2,59 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Stream Stats</title>
+  <title>WOT Залишилось</title>
   <style>
     body {
       margin: 0;
+      background: transparent;
       font-family: 'Arial', sans-serif;
-      background: rgba(0, 0, 0, 0);
-      color: white;
+      color: #ffffff;
       text-align: center;
     }
-    .panel {
-      background: linear-gradient(135deg, #ff6600, #ff3300);
+    .container {
       padding: 20px;
+      background-color: rgba(0, 0, 0, 0.5);
       border-radius: 20px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-      width: 600px;
-      margin: 20px auto;
+      display: inline-block;
+      box-shadow: 0 0 20px #00000088;
     }
-    .title {
-      font-size: 28px;
+    .label {
+      font-size: 32px;
       font-weight: bold;
-      margin-bottom: 10px;
+      text-shadow: 2px 2px 6px black;
     }
     .value {
-      font-size: 48px;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-    .small {
-      font-size: 18px;
-      color: #ccc;
+      font-size: 64px;
+      color: #00ffff;
+      text-shadow: 2px 2px 8px black;
     }
   </style>
 </head>
 <body>
-  <div class="panel">
-    <div class="title">ЗАЛИШИЛОСЬ</div>
-    <div class="value" id="left">Завантаження...</div>
-
-    <div class="title">НАСТРІЛЯНО</div>
-    <div class="value" id="done">Завантаження...</div>
-
-    <div class="small">+50 урону за 1 грн</div>
+  <div class="container">
+    <div class="label">ЗАЛИШИЛОСЬ</div>
+    <div class="value" id="points">Завантаження...</div>
   </div>
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const GID_DAMAGE = "0"; // Аркуш1, урон
-    const GID_DONATE = "1395914915"; // донат
+    const SHEET_GID = "1798310371";
+    const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
 
-    async function getValue(gid, col) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${gid}`;
-      const res = await fetch(url);
-      const text = await res.text();
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-      let sum = 0;
-      json.table.rows.forEach(row => {
-        const cell = row.c[col];
-        if (cell && cell.v) sum += Number(cell.v);
-      });
-      return sum;
+    async function fetchPoints() {
+      try {
+        const res = await fetch(URL);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const value = json.table.rows[0].c[6].v; // колонка G, перший рядок
+        document.getElementById("points").textContent = value.toLocaleString('uk-UA');
+      } catch (e) {
+        document.getElementById("points").textContent = "Помилка";
+      }
     }
 
-    async function updateStats() {
-      const damage = await getValue(GID_DAMAGE, 3); // стовпець D = 3
-      const donations = await getValue(GID_DONATE, 2); // стовпець C = 2
-      const bonus = donations * 50;
-      const target = 100000;
-      const total = damage + bonus;
-      const left = Math.max(0, target - total);
-
-      document.getElementById("done").textContent = total.toLocaleString("uk-UA");
-      document.getElementById("left").textContent = left.toLocaleString("uk-UA");
-    }
-
-    updateStats();
-    setInterval(updateStats, 30000); // оновлення кожні 30 сек
+    fetchPoints();
+    setInterval(fetchPoints, 15000); // Оновлення кожні 15 сек
   </script>
 </body>
 </html>
