@@ -49,10 +49,10 @@
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcK6Sr-Xoo6Sscu6SyS6JSS3r9k";
-    const REMAIN_GID = "1798310371"; // G3 (залишилось)
+    const GID = "1630188258";
 
-    async function fetchData(gid) {
-      const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${gid}`;
+    async function fetchData() {
+      const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${GID}`;
       const res = await fetch(URL);
       const text = await res.text();
       const json = JSON.parse(text.substring(47).slice(0, -2));
@@ -61,9 +61,9 @@
 
     async function updateUI() {
       try {
-        const remainData = await fetchData(REMAIN_GID);
-        const remaining = remainData.rows[2].c[6].v;
-        const damaged = remainData.rows[2].c[2].v;
+        const data = await fetchData();
+        const remaining = data.rows[2].c[6].v;
+        const damaged = data.rows[2].c[2].v;
 
         document.getElementById("remaining").innerText = remaining.toLocaleString();
         document.getElementById("damaged").innerText = damaged.toLocaleString();
