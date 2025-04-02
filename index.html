@@ -38,8 +38,13 @@
 </head>
 <body>
   <div class="block">
-    <div class="label">ТЕСТ C3</div>
-    <div class="value" id="testC3">Завантаження...</div>
+    <div class="label">ЗАЛИШИЛОСЬ</div>
+    <div class="value" id="remaining">Завантаження...</div>
+
+    <div class="label">НАСТРІЛЯНО</div>
+    <div class="value" id="damaged">Завантаження...</div>
+
+    <div class="note">+50 урону за 1 грн</div>
   </div>
 
   <script>
@@ -57,18 +62,21 @@
     async function updateUI() {
       try {
         const data = await fetchData();
-        const row = data.rows[0]; // перший рядок таблиці
-        const c3value = row.c[2].v; // C3 — індекс 2
+        const row = data.rows[0]; // Перший рядок
+        const damaged = row.c[2].v;   // C3 (індекс 2)
+        const remaining = row.c[6].v; // G3 (індекс 6)
 
-        document.getElementById("testC3").innerText = Number(c3value).toLocaleString();
+        document.getElementById("remaining").innerText = Number(remaining).toLocaleString();
+        document.getElementById("damaged").innerText = Number(damaged).toLocaleString();
       } catch (err) {
         console.error(err);
-        document.getElementById("testC3").innerText = "Помилка";
+        document.getElementById("remaining").innerText = "Помилка";
+        document.getElementById("damaged").innerText = "Помилка";
       }
     }
 
     updateUI();
-    setInterval(updateUI, 15000);
+    setInterval(updateUI, 15000); // оновлення кожні 15 сек
   </script>
 </body>
 </html>
