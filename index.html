@@ -8,43 +8,53 @@
       background-color: transparent;
       font-family: 'Arial', sans-serif;
       color: white;
-      text-align: center;
-      padding-top: 30px;
-      text-shadow: 2px 2px 5px black;
+      text-align: left;
+      padding: 20px;
+      text-shadow: 1px 1px 3px black;
     }
-    .block {
-      background: linear-gradient(45deg, #ff6a00, #ee0979);
-      padding: 30px;
-      border-radius: 20px;
-      width: 400px;
-      margin: auto;
-      box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    .panel {
+      width: 500px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 15px;
+      padding: 25px 30px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding: 10px 0;
     }
     .label {
-      font-size: 24px;
+      font-size: 18px;
       font-weight: bold;
+      color: #ddd;
     }
     .value {
-      font-size: 52px;
+      font-size: 28px;
       color: cyan;
       font-weight: bold;
-      margin-bottom: 20px;
     }
-    .note {
-      font-size: 16px;
-      color: #eee;
+    .footer {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 12px;
+      color: #ccc;
     }
   </style>
 </head>
 <body>
-  <div class="block">
-    <div class="label">ЗАЛИШИЛОСЬ</div>
-    <div class="value" id="cellG3">Завантаження...</div>
-
-    <div class="label">ВЖЕ ВИКОНАНО</div>
-    <div class="value" id="cellC3">Завантаження...</div>
-
-    <div class="note">+50 урону за 1 грн</div>
+  <div class="panel">
+    <div class="row">
+      <div class="label">ЗАЛИШИЛОСЬ</div>
+      <div class="value" id="cellG3">Завантаження...</div>
+    </div>
+    <div class="row">
+      <div class="label">ВЖЕ ВИКОНАНО</div>
+      <div class="value" id="cellC3">Завантаження...</div>
+    </div>
+    <div class="footer">+50 урону за 1 грн</div>
   </div>
 
   <script>
