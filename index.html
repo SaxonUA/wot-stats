@@ -24,10 +24,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 25px 0; /* збільшений відступ для розміщення */
+      margin: 15px 0;
     }
     .text-block {
       text-align: left;
+      min-width: 170px;
     }
     .title {
       font-size: 20px;
@@ -38,7 +39,7 @@
     .value-block {
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       gap: 10px;
     }
     .value {
@@ -81,12 +82,10 @@
       <div class="text-block">
         <div class="title">ЗАЛИШИЛОСЬ<br>НАСТРІЛЯТИ</div>
       </div>
-      <div class="value-block">
-        <div class="value" id="cellG3">...</div>
-        <div class="icon-wrapper">
-          <img src="pricil.png" class="icon-pricil">
-        </div>
+      <div class="icon-wrapper">
+        <img src="pricil.png" class="icon-pricil">
       </div>
+      <div class="value" id="cellG3">...</div>
     </div>
 
     <div class="divider"></div>
@@ -95,12 +94,10 @@
       <div class="text-block">
         <div class="title">ВЖЕ<br>ВИКОНАНО</div>
       </div>
-      <div class="value-block">
-        <div class="value" id="cellC3">...</div>
-        <div class="icon-wrapper">
-          <img src="kr.png" class="icon-kr">
-        </div>
+      <div class="icon-wrapper">
+        <img src="kr.png" class="icon-kr">
       </div>
+      <div class="value" id="cellC3">...</div>
     </div>
 
     <div class="divider"></div>
