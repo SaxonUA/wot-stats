@@ -57,8 +57,8 @@
     async function updateUI() {
       try {
         const data = await fetchData();
-        const row = data.rows[2]; // рядок C3 — це третій (індексація з 0)
-        const c3value = row.c[2].v; // C — це третя колонка (індекс 2)
+        const row = data.rows[0]; // перший рядок таблиці
+        const c3value = row.c[2].v; // C3 — індекс 2
 
         document.getElementById("testC3").innerText = Number(c3value).toLocaleString();
       } catch (err) {
