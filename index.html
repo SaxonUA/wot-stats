@@ -49,28 +49,29 @@
 
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcK6Sr-Xoo6Sscu6SyS6JSS3r9k";
-    const GID = "1630188258";
+    const GID = "1630188258"; // Аркуш "WOT"
 
     async function fetchData() {
       const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq&gid=${GID}`;
       const res = await fetch(URL);
       const text = await res.text();
       const json = JSON.parse(text.substring(47).slice(0, -2));
-      return json.table.rows;
+      return json.table;
     }
 
     async function updateUI() {
       try {
-        const rows = await fetchData();
-        const damaged = Number(rows[2].c[2].v); // C3 (Аркуш3!C3)
-        const remaining = Number(rows[2].c[6].v); // G3 (Аркуш3!G3)
+        const data = await fetchData();
+        const rows = data.rows;
+        const damaged = Number(rows[2].c[2].v);   // C3
+        const remaining = Number(rows[2].c[6].v); // G3
 
         document.getElementById("damaged").innerText = damaged.toLocaleString();
         document.getElementById("remaining").innerText = remaining.toLocaleString();
       } catch (err) {
         console.error(err);
-        document.getElementById("damaged").innerText = "Помилка";
         document.getElementById("remaining").innerText = "Помилка";
+        document.getElementById("damaged").innerText = "Помилка";
       }
     }
 
