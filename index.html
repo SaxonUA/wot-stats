@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>WOT Duplet Overlay</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
     * {
       box-sizing: border-box;
     }
@@ -29,7 +31,7 @@
     }
     .row {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       gap: 10px;
       background: rgba(0, 0, 0, 0.5);
@@ -38,7 +40,7 @@
     }
     .plain-number {
       font-size: 28px;
-      margin-right: 20px;
+      margin-left: -10px;
       text-shadow: 1px 1px 4px black;
       transition: all 0.3s ease-in-out;
     }
@@ -50,6 +52,7 @@
     }
     #frags {
       color: violet;
+      margin-left: -10px;
     }
     .info-box {
       background-color: #1d1d1d;
@@ -77,6 +80,12 @@
       margin-right: 10px;
       text-shadow: 1px 1px 4px black;
       transition: all 0.3s ease-in-out;
+    }
+    .team-name {
+      font-family: 'Russo One', sans-serif;
+      font-size: 46px;
+      letter-spacing: 1px;
+      text-shadow: 2px 2px 5px black;
     }
     .section-header {
       display: flex;
@@ -128,7 +137,7 @@
       text-transform: uppercase;
     }
     #totalPoints {
-      font-size: 42px;
+      font-size: 56px;
     }
   </style>
 </head>
@@ -151,7 +160,7 @@
     <div class="team-row">
       <div class="team-label">
         <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/ataman.png" alt="Ataman">
-        <div class="label">ATAMAN</div>
+        <div class="team-name">ATAMAN</div>
       </div>
       <div class="info-box value" id="avgAtaman">0</div>
     </div>
@@ -159,7 +168,7 @@
     <div class="team-row">
       <div class="team-label">
         <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/saxon.png" alt="Saxon">
-        <div class="label">SAXON</div>
+        <div class="team-name">SAXON</div>
       </div>
       <div class="info-box value" id="avgSaxon">0</div>
     </div>
