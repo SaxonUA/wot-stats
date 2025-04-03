@@ -22,38 +22,47 @@
       flex-direction: column;
       gap: 20px;
       padding: 20px;
-      max-width: 1044px;
+      max-width: 540px;
       margin: 0 auto;
-      background: #444;
+      background: rgba(0, 0, 0, 0.8);
       border-radius: 10px;
     }
     .row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
+    }
+    .plain-number {
+      font-size: 24px;
+      margin-right: 20px;
+    }
+    #battles {
+      color: orange;
+    }
+    #wins {
+      color: cyan;
+    }
+    #frags {
+      color: violet;
     }
     .info-box {
-      background: repeating-linear-gradient(
-        45deg,
-        #999 0px,
-        #999 10px,
-        #ccc 10px,
-        #ccc 20px
-      );
+      background-color: #1d1d1d;
+      background-image: repeating-linear-gradient(135deg, #444 0, #444 10px, #1d1d1d 10px, #1d1d1d 20px);
       padding: 10px 30px;
-      font-size: 28px;
-      border-radius: 8px;
+      font-size: 24px;
+      border-radius: 0;
       color: white;
       text-shadow: 1px 1px 2px black;
       margin-left: auto;
     }
     .label {
-      font-size: 28px;
+      font-size: 24px;
       text-transform: uppercase;
       margin-right: 10px;
     }
     .section-title {
-      font-size: 30px;
+      font-size: 26px;
       border-bottom: 2px solid purple;
       padding-bottom: 10px;
       margin-bottom: 10px;
@@ -66,12 +75,24 @@
     .team-label {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
     }
     .team img {
-      width: 100px;
-      height: 100px;
+      width: 60px;
+      height: 60px;
       object-fit: contain;
+    }
+    .points-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      border-top: 2px solid purple;
+      padding-top: 10px;
+    }
+    .points-label {
+      font-size: 26px;
+      text-transform: uppercase;
     }
   </style>
 </head>
@@ -79,11 +100,11 @@
   <div class="container">
     <div class="row">
       <div class="label">Бій:</div>
-      <div class="info-box" id="battles">0</div>
+      <div class="plain-number" id="battles">0</div>
       <div class="label">Перемоги:</div>
-      <div class="info-box" id="wins">0</div>
+      <div class="plain-number" id="wins">0</div>
       <div class="label">Фраги:</div>
-      <div class="info-box" id="frags">0</div>
+      <div class="plain-number" id="frags">0</div>
     </div>
 
     <div class="section-title">Середня шкода</div>
@@ -104,8 +125,10 @@
       <div class="info-box" id="avgSaxon">0</div>
     </div>
 
-    <div class="section-title">Загальна к-ть очок:</div>
-    <div class="info-box" id="totalPoints">0</div>
+    <div class="points-block">
+      <div class="points-label">Загальна к-ть очок:</div>
+      <div class="info-box" id="totalPoints">0</div>
+    </div>
   </div>
 
   <script>
