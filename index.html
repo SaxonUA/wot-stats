@@ -61,11 +61,22 @@
       text-transform: uppercase;
       margin-right: 10px;
     }
-    .section-title {
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 26px;
       border-bottom: 2px solid purple;
       padding-bottom: 10px;
       margin-bottom: 10px;
+    }
+    .section-header-left {
+      flex: 1;
+      text-align: left;
+      color: white;
+    }
+    .section-header-right {
+      flex: 1;
       text-align: right;
     }
     .team-row {
@@ -95,6 +106,9 @@
       font-size: 26px;
       text-transform: uppercase;
     }
+    #totalPoints {
+      font-size: 36px;
+    }
   </style>
 </head>
 <body>
@@ -108,7 +122,10 @@
       <div class="plain-number" id="frags">0</div>
     </div>
 
-    <div class="section-title"><div style="display: inline-block; text-align: center; line-height: 1.2;">Середня<br>шкода</div></div>
+    <div class="section-header">
+      <div class="section-header-left" id="winPercent">WIN %: <span style="color: yellow">0%</span></div>
+      <div class="section-header-right">Середня<br>шкода</div>
+    </div>
 
     <div class="team-row">
       <div class="team-label">
@@ -158,6 +175,10 @@
         document.getElementById("avgSaxon").textContent = avgSaxon;
         document.getElementById("avgAtaman").textContent = avgAtaman;
         document.getElementById("totalPoints").textContent = totalPoints;
+
+        const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
+        document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: yellow">${winPercent}%</span>`;
+
       } catch (e) {
         console.error("Помилка при отриманні даних з таблиці:", e);
       }
