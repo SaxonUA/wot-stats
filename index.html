@@ -194,14 +194,34 @@
       margin-bottom: 5px;
     }
 
-    /* Колір цифр для Загальна к-ть шкоди (зелений) */
+    /* Колір цифр для Загальна к-ть шкоди (жовтий) */
     #totalDamage {
-      color: #ff9900; /* Яскравий зелений */
+      color: #ff9900; /* Яскравий жовтий */
     }
 
-    /* Колір цифр для Загальна к-ть очок (фіолетовий) */
+    /* Колір цифр для Загальна к-ть очок (блакитний) */
     #totalPoints {
-      color: #00ffff; /* Фіолетовий */
+      color: #00ffff; /* Блакитний */
+    }
+
+    /* Анімація для зміни числа */
+    @keyframes numberChange {
+      0% {
+        transform: scale(1);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .updated {
+      animation: numberChange 0.5s ease-out; /* Час анімації 0.5 секунди */
     }
   </style>
 </head>
@@ -310,8 +330,8 @@
       if (!el) return;
       if (el.textContent !== newValue) {
         el.textContent = newValue;
-        el.classList.add("updated");
-        setTimeout(() => el.classList.remove("updated"), 400);
+        el.classList.add("updated");  // Додаємо клас для анімації
+        setTimeout(() => el.classList.remove("updated"), 500);  // Видаляємо клас після анімації
       }
     }
 
