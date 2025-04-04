@@ -110,7 +110,7 @@
     .team-label {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 15px;
     }
     .team-logo {
       width: 63px;
@@ -121,8 +121,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 1px;
-      padding-top: 2px;
+      gap: 10px;
+      border-top: 4px solid;
+      border-image: linear-gradient(to right, orange, red) 1;
+      padding-top: 10px;
     }
     .points-label {
       font-size: 26px;
@@ -147,7 +149,7 @@
       justify-content: space-between;
       align-items: right;
       margin-bottom: 10px;
-      border-bottom: 2px solid;
+      border-bottom: 4px solid;
       border-image: linear-gradient(to right, orange, red) 1;
       padding-bottom: 4px;
     }
@@ -159,7 +161,7 @@
       flex: 1;
     }
     .extra-info-divider-top {
-      border-top: 2px solid;
+      border-top: 4px solid;
       border-image: linear-gradient(to right, orange, red) 1;
       margin: 10px 0;
     }
@@ -186,49 +188,27 @@
       text-align: left;
     }
 
-    /* Градієнтна полоса */
-    .gradient-line {
-      height: 4px;
-      background: linear-gradient(to right, orange, red);
-      margin-top: 5px;
-      margin-bottom: 5px;
+    /* Анімація */
+    .value.updated, .plain-number.updated, .extra-info-value.updated {
+      animation: flash 0.4s ease-in-out;
     }
 
-    /* Колір цифр для Загальна к-ть шкоди (жовтий) */
-    #totalDamage {
-      color: #ff9900; /* Яскравий жовтий */
-    }
-
-    /* Колір цифр для Загальна к-ть очок (блакитний) */
-    #totalPoints {
-      color: #00ffff; /* Блакитний */
-    }
-
-    /* Анімація для зміни числа */
-    @keyframes numberChange {
+    @keyframes flash {
       0% {
-        transform: scale(1);
-        opacity: 0;
-      }
-      50% {
-        transform: scale(1.2);
-        opacity: 1;
+        background-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.15);
       }
       100% {
+        background-color: transparent;
         transform: scale(1);
-        opacity: 1;
       }
-    }
-
-    .updated {
-      animation: numberChange 0.5s ease-out; /* Час анімації 0.5 секунди */
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="row">
-      <div class="label">Боїв:</div>
+      <div class="label">Бій:</div>
       <div class="plain-number" id="battles">0</div>
       <div class="label">Перемоги:</div>
       <div class="plain-number" id="wins">0</div>
@@ -238,7 +218,7 @@
 
     <div class="section-header">
       <div class="section-header-left" id="winPercent">WIN %: <span style="color: lime">0%</span></div>
-      <div class="section-header-right">Загальна<br>шкода</div>
+      <div class="section-header-right">Середня<br>шкода</div>
     </div>
 
     <div class="team-row">
@@ -246,7 +226,7 @@
         <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/ataman.png" alt="Ataman">
         <div class="team-name">ATAMAN</div>
       </div>
-      <div class="info-box value" id="totalDamageAtaman">0</div> <!-- Загальна шкода для ATAMAN -->
+      <div class="info-box value" id="avgAtaman">0</div>
     </div>
 
     <div class="team-row">
@@ -254,22 +234,13 @@
         <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/saxon.png" alt="Saxon">
         <div class="team-name">SAXON</div>
       </div>
-      <div class="info-box value" id="totalDamageSaxon">0</div> <!-- Загальна шкода для SAXON -->
-    </div>
-
-    <!-- Градієнтна полоса -->
-    <div class="gradient-line"></div>
-
-    <div class="points-block">
-      <div class="points-label" id="totalDamageLabel">Загальна к-ть шкоди:</div>
-      <div class="info-box value" id="totalDamage">0</div> <!-- Загальна к-ть шкоди -->
+      <div class="info-box value" id="avgSaxon">0</div>
     </div>
 
     <div class="points-block">
       <div class="points-label">Загальна к-ть очок:</div>
-      <div class="info-box value" id="totalPoints">0</div> <!-- Загальна к-ть очок -->
+      <div class="info-box value" id="totalPoints">0</div>
     </div>
-
   </div>
 
   <div class="extra-info">
@@ -330,8 +301,8 @@
       if (!el) return;
       if (el.textContent !== newValue) {
         el.textContent = newValue;
-        el.classList.add("updated");  // Додаємо клас для анімації
-        setTimeout(() => el.classList.remove("updated"), 500);  // Видаляємо клас після анімації
+        el.classList.add("updated");
+        setTimeout(() => el.classList.remove("updated"), 400);
       }
     }
 
@@ -347,10 +318,6 @@
         const worst = await fetchCell("L1");
         const last = await fetchCell("M1");
 
-        const totalDamageAtaman = await fetchCell("E1"); // Загальна шкода для ATAMAN
-        const totalDamageSaxon = await fetchCell("D1"); // Загальна шкода для SAXON
-        const totalDamage = await fetchCell("N1"); // Загальна шкода для всіх
-
         animateUpdate("battles", battles);
         animateUpdate("wins", wins);
         animateUpdate("frags", frags);
@@ -360,10 +327,6 @@
         animateUpdate("best", best);
         animateUpdate("worst", worst);
         animateUpdate("last", last);
-
-        animateUpdate("totalDamageAtaman", totalDamageAtaman); // Оновлення шкоди для ATAMAN
-        animateUpdate("totalDamageSaxon", totalDamageSaxon); // Оновлення шкоди для SAXON
-        animateUpdate("totalDamage", totalDamage); // Оновлення загальної шкоди
 
         const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
         document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
