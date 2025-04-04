@@ -45,7 +45,7 @@
       transition: all 0.3s ease-in-out;
     }
     #battles {
-      color: orange;
+      color: #FFD700; /* яскраво-жовтий */
     }
     #wins {
       color: cyan;
@@ -144,16 +144,16 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="label">Боїв: </div>
+      <div class="label">Бій:</div>
       <div class="plain-number" id="battles">0</div>
-      <div class="label">Перемоги: </div>
+      <div class="label">Перемоги:</div>
       <div class="plain-number" id="wins">0</div>
-      <div class="label">Фраги: </div>
+      <div class="label">Фраги:</div>
       <div class="plain-number" id="frags">0</div>
     </div>
 
     <div class="section-header">
-      <div class="section-header-left" id="winPercent">WIN: <span style="color: yellow">0%</span></div>
+      <div class="section-header-left" id="winPercent">WIN %: <span style="color: lime">0%</span></div>
       <div class="section-header-right">Середня<br>шкода</div>
     </div>
 
@@ -207,7 +207,7 @@
         document.getElementById("totalPoints").textContent = totalPoints;
 
         const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
-        document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: yellow">${winPercent}%</span>`;
+        document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
 
       } catch (e) {
         console.error("Помилка при отриманні даних з таблиці:", e);
@@ -215,7 +215,7 @@
     }
 
     updateOverlay();
-    setInterval(updateOverlay, 10000);
+    setInterval(updateOverlay, 30000);
   </script>
 </body>
 </html>
