@@ -50,7 +50,7 @@
 
     .info-box {
       background-color: #1d1d1d;
-      background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px);
+      background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0px, rgba(255, 255, 255, 0.3) 10px, transparent 10px, transparent 20px);
       padding: 10px 30px;
       font-size: 24px;
       border-radius: 0;
@@ -149,16 +149,17 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+      border-bottom: 4px solid;
+      border-image: linear-gradient(to right, orange, red) 1;
+      padding-bottom: 4px;
     }
     .extra-info-title {
-      font-size: 26px;
+      font-size: 28px;
       text-align: center;
       color: white;
       text-transform: capitalize;
       line-height: 1.2;
       flex: 1;
-      border-bottom: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
     }
     .extra-info-divider-top {
       border-top: 4px solid;
@@ -184,7 +185,7 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="label">Боїв:</div>
+      <div class="label">Бій:</div>
       <div class="plain-number" id="battles">0</div>
       <div class="label">Перемоги:</div>
       <div class="plain-number" id="wins">0</div>
@@ -228,11 +229,11 @@
     </div>
     <div class="extra-info-row">
       <div>Найгірший бій:</div>
-      <div class="extra-info-value" id="worst">0</div>
+      <div class="extra-info-value" id="best">0</div>
     </div>
     <div class="extra-info-row">
       <div>Найкращий бій:</div>
-      <div class="extra-info-value" id="best">0</div>
+      <div class="extra-info-value" id="worst">0</div>
     </div>
     <div class="extra-info-divider-top"></div>
     <div class="extra-info-row">
@@ -274,8 +275,8 @@
         const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
         document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
 
-        document.getElementById("best").textContent = worst;
-        document.getElementById("worst").textContent = best;
+        document.getElementById("best").textContent = best;
+        document.getElementById("worst").textContent = worst;
         document.getElementById("last").textContent = last;
 
       } catch (e) {
