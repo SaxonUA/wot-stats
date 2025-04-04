@@ -134,7 +134,7 @@
       font-size: 56px;
     }
     .extra-info {
-      margin: 30px auto 0;
+      margin: 25px auto 0;
       padding: 20px;
       background: rgba(0, 0, 0, 0.5);
       border-radius: 10px;
@@ -154,7 +154,7 @@
       padding-bottom: 4px;
     }
     .extra-info-title {
-      font-size: 25px;
+      font-size: 34px;
       text-align: center;
       color: white;
       text-transform: capitalize;
@@ -230,11 +230,10 @@
 
   <div class="extra-info">
     <div class="extra-info-header">
-      <div style="flex:1"> <div class="extra-info-meta">
+      <div class="extra-info-meta" id="datetimeWrapper">
         <div id="currentDate">Дата</div>
         <div id="currentTime">Час по Києву</div>
-      </div></div>
-      <div style="flex:1"></div>
+      </div>
       <div style="flex:1"></div>
       <div class="extra-info-title">Кількість<br>Очок</div>
     </div>
@@ -264,6 +263,24 @@
       return text.trim().replace(/^"|"$/g, "");
     }
 
+    function formatTimeUnit(unit) {
+      return unit < 10 ? `0${unit}` : unit;
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      const dateStr = `${formatTimeUnit(now.getDate())}.${formatTimeUnit(now.getMonth() + 1)}.${now.getFullYear()}`;
+      const timeStr = `${formatTimeUnit(now.getHours())}:${formatTimeUnit(now.getMinutes())}:${formatTimeUnit(now.getSeconds())}`;
+
+      const dateElem = document.getElementById("currentDate");
+      const timeElem = document.getElementById("currentTime");
+
+      if (dateElem && timeElem) {
+        dateElem.textContent = dateStr;
+        timeElem.textContent = timeStr;
+      }
+    }
+
     async function updateOverlay() {
       try {
         const battles = await fetchCell("A1");
@@ -290,20 +307,15 @@
         document.getElementById("worst").textContent = worst;
         document.getElementById("last").textContent = last;
 
-        const now = new Date();
-        const optionsDate = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Europe/Kyiv' };
-
-        document.getElementById("currentDate").textContent = now.toLocaleDateString('uk-UA', optionsDate);
-        document.getElementById("currentTime").textContent = now.toLocaleTimeString('uk-UA', optionsTime);
-
       } catch (e) {
         console.error("Помилка при отриманні даних з таблиці:", e);
       }
     }
 
     updateOverlay();
+    updateDateTime();
     setInterval(updateOverlay, 30000);
+    setInterval(updateDateTime, 1000);
   </script>
 </body>
 </html>
