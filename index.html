@@ -157,7 +157,6 @@
       font-size: 25px;
       text-align: right;
       color: white;
-     
       line-height: 1.0;
       flex: 1;
     }
@@ -187,6 +186,22 @@
       line-height: 1.4;
       color: #FFD700;
       text-align: left;
+    }
+
+    /* Анімація */
+    .value.updated, .plain-number.updated, .extra-info-value.updated {
+      animation: flash 0.4s ease-in-out;
+    }
+
+    @keyframes flash {
+      0% {
+        background-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.15);
+      }
+      100% {
+        background-color: transparent;
+        transform: scale(1);
+      }
     }
   </style>
 </head>
@@ -281,6 +296,16 @@
       }
     }
 
+    function animateUpdate(id, newValue) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (el.textContent !== newValue) {
+        el.textContent = newValue;
+        el.classList.add("updated");
+        setTimeout(() => el.classList.remove("updated"), 400);
+      }
+    }
+
     async function updateOverlay() {
       try {
         const battles = await fetchCell("A1");
@@ -293,19 +318,18 @@
         const worst = await fetchCell("L1");
         const last = await fetchCell("M1");
 
-        document.getElementById("battles").textContent = battles;
-        document.getElementById("wins").textContent = wins;
-        document.getElementById("frags").textContent = frags;
-        document.getElementById("avgSaxon").textContent = avgSaxon;
-        document.getElementById("avgAtaman").textContent = avgAtaman;
-        document.getElementById("totalPoints").textContent = totalPoints;
+        animateUpdate("battles", battles);
+        animateUpdate("wins", wins);
+        animateUpdate("frags", frags);
+        animateUpdate("avgSaxon", avgSaxon);
+        animateUpdate("avgAtaman", avgAtaman);
+        animateUpdate("totalPoints", totalPoints);
+        animateUpdate("best", best);
+        animateUpdate("worst", worst);
+        animateUpdate("last", last);
 
         const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
         document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
-
-        document.getElementById("best").textContent = best;
-        document.getElementById("worst").textContent = worst;
-        document.getElementById("last").textContent = last;
 
       } catch (e) {
         console.error("Помилка при отриманні даних з таблиці:", e);
