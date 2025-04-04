@@ -44,16 +44,10 @@
       text-shadow: 1px 1px 4px black;
       transition: all 0.3s ease-in-out;
     }
-    #battles {
-      color: #FFD700;
-    }
-    #wins {
-      color: cyan;
-    }
-    #frags {
-      color: violet;
-      margin-left: -10px;
-    }
+    #battles { color: #FFD700; }
+    #wins { color: cyan; }
+    #frags { color: violet; margin-left: -10px; }
+
     .info-box {
       background-color: #1d1d1d;
       background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px);
@@ -148,6 +142,28 @@
       font-weight: bold;
       text-shadow: 1px 1px 3px black;
       max-width: 540px;
+      position: relative;
+    }
+    .extra-info-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .extra-info-title {
+      font-size: 26px;
+      text-align: center;
+      color: white;
+      text-transform: capitalize;
+      line-height: 1.2;
+      flex: 1;
+      border-bottom: 4px solid;
+      border-image: linear-gradient(to right, orange, red) 1;
+    }
+    .extra-info-divider-top {
+      border-top: 4px solid;
+      border-image: linear-gradient(to right, orange, red) 1;
+      margin: 10px 0;
     }
     .extra-info-row {
       display: flex;
@@ -156,17 +172,12 @@
       margin-bottom: 10px;
     }
     .extra-info-value {
-      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.15), rgba(255,255,255,0.15) 10px, transparent 10px, transparent 20px);
       padding: 5px 15px;
       font-size: 28px;
       border-radius: 5px;
       color: white;
       text-shadow: 1px 1px 2px black;
-    }
-    .extra-info-divider {
-      border-top: 4px solid red;
-      padding-top: 10px;
-      margin-top: 10px;
     }
   </style>
 </head>
@@ -209,17 +220,24 @@
   </div>
 
   <div class="extra-info">
+    <div class="extra-info-header">
+      <div style="flex:1"></div>
+      <div style="flex:1"></div>
+      <div style="flex:1"></div>
+      <div class="extra-info-title">Кількість<br>Очок</div>
+    </div>
     <div class="extra-info-row">
       <div>Найгірший бій:</div>
-      <div class="extra-info-value" id="worstBattle">-</div>
+      <div class="extra-info-value" id="worst">0</div>
     </div>
     <div class="extra-info-row">
       <div>Найкращий бій:</div>
-      <div class="extra-info-value" id="bestBattle">-</div>
+      <div class="extra-info-value" id="best">0</div>
     </div>
-    <div class="extra-info-row extra-info-divider">
+    <div class="extra-info-divider-top"></div>
+    <div class="extra-info-row">
       <div>Останній бій:</div>
-      <div class="extra-info-value" id="lastBattle">-</div>
+      <div class="extra-info-value" id="last">0</div>
     </div>
   </div>
 
@@ -242,9 +260,9 @@
         const avgSaxon = await fetchCell("F1");
         const avgAtaman = await fetchCell("G1");
         const totalPoints = await fetchCell("H1");
-        const worstBattle = await fetchCell("L1");
-        const bestBattle = await fetchCell("K1");
-        const lastBattle = await fetchCell("M1");
+        const worst = await fetchCell("K1");
+        const best = await fetchCell("L1");
+        const last = await fetchCell("M1");
 
         document.getElementById("battles").textContent = battles;
         document.getElementById("wins").textContent = wins;
@@ -252,12 +270,13 @@
         document.getElementById("avgSaxon").textContent = avgSaxon;
         document.getElementById("avgAtaman").textContent = avgAtaman;
         document.getElementById("totalPoints").textContent = totalPoints;
-        document.getElementById("worstBattle").textContent = worstBattle;
-        document.getElementById("bestBattle").textContent = bestBattle;
-        document.getElementById("lastBattle").textContent = lastBattle;
 
         const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
         document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
+
+        document.getElementById("best").textContent = worst;
+        document.getElementById("worst").textContent = best;
+        document.getElementById("last").textContent = last;
 
       } catch (e) {
         console.error("Помилка при отриманні даних з таблиці:", e);
