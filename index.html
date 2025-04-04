@@ -63,7 +63,7 @@
       font-size: 38px;
       font-weight: bold;
       color: #fff;
-      background: repeating-linear-gradient(-45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
       padding: 5px 15px;
       border-radius: 5px;
       transition: all 0.3s ease-in-out;
@@ -110,7 +110,7 @@
     .team-label {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 5px;
     }
     .team-logo {
       width: 63px;
@@ -121,10 +121,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      border-top: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
-      padding-top: 10px;
+      gap: 1px;
+      padding-top: 2px;
     }
     .points-label {
       font-size: 26px;
@@ -172,7 +170,7 @@
       margin-bottom: 10px;
     }
     .extra-info-value {
-      background: repeating-linear-gradient(-45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
+      background: repeating-linear-gradient(45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
       padding: 5px 15px;
       font-size: 28px;
       border-radius: 5px;
@@ -188,20 +186,22 @@
       text-align: left;
     }
 
-    /* Анімація */
-    .value.updated, .plain-number.updated, .extra-info-value.updated {
-      animation: flash 0.4s ease-in-out;
+    /* Градієнтна полоса */
+    .gradient-line {
+      height: 4px;
+      background: linear-gradient(to right, #FF5733, #900C3F);
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
 
-    @keyframes flash {
-      0% {
-        background-color: rgba(255, 255, 255, 0.5);
-        transform: scale(1.15);
-      }
-      100% {
-        background-color: transparent;
-        transform: scale(1);
-      }
+    /* Колір цифр для Загальна к-ть шкоди (зелений) */
+    #totalDamage {
+      color: #00ff00; /* Яскравий зелений */
+    }
+
+    /* Колір цифр для Загальна к-ть очок (фіолетовий) */
+    #totalPoints {
+      color: #ff00e6; /* Фіолетовий */
     }
   </style>
 </head>
@@ -218,7 +218,7 @@
 
     <div class="section-header">
       <div class="section-header-left" id="winPercent">WIN %: <span style="color: lime">0%</span></div>
-      <div class="section-header-right">Середня<br>шкода</div>
+      <div class="section-header-right">Загальна<br>шкода</div>
     </div>
 
     <div class="team-row">
@@ -226,7 +226,7 @@
         <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/ataman.png" alt="Ataman">
         <div class="team-name">ATAMAN</div>
       </div>
-      <div class="info-box value" id="avgAtaman">0</div>
+      <div class="info-box value" id="totalDamageAtaman">0</div> <!-- Загальна шкода для ATAMAN -->
     </div>
 
     <div class="team-row">
@@ -234,13 +234,22 @@
         <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/saxon.png" alt="Saxon">
         <div class="team-name">SAXON</div>
       </div>
-      <div class="info-box value" id="avgSaxon">0</div>
+      <div class="info-box value" id="totalDamageSaxon">0</div> <!-- Загальна шкода для SAXON -->
+    </div>
+
+    <!-- Градієнтна полоса -->
+    <div class="gradient-line"></div>
+
+    <div class="points-block">
+      <div class="points-label" id="totalDamageLabel">Загальна к-ть шкоди:</div>
+      <div class="info-box value" id="totalDamage">0</div> <!-- Загальна к-ть шкоди -->
     </div>
 
     <div class="points-block">
       <div class="points-label">Загальна к-ть очок:</div>
-      <div class="info-box value" id="totalPoints">0</div>
+      <div class="info-box value" id="totalPoints">0</div> <!-- Загальна к-ть очок -->
     </div>
+
   </div>
 
   <div class="extra-info">
@@ -318,6 +327,10 @@
         const worst = await fetchCell("L1");
         const last = await fetchCell("M1");
 
+        const totalDamageAtaman = await fetchCell("E1"); // Загальна шкода для ATAMAN
+        const totalDamageSaxon = await fetchCell("D1"); // Загальна шкода для SAXON
+        const totalDamage = await fetchCell("N1"); // Загальна шкода для всіх
+
         animateUpdate("battles", battles);
         animateUpdate("wins", wins);
         animateUpdate("frags", frags);
@@ -327,6 +340,10 @@
         animateUpdate("best", best);
         animateUpdate("worst", worst);
         animateUpdate("last", last);
+
+        animateUpdate("totalDamageAtaman", totalDamageAtaman); // Оновлення шкоди для ATAMAN
+        animateUpdate("totalDamageSaxon", totalDamageSaxon); // Оновлення шкоди для SAXON
+        animateUpdate("totalDamage", totalDamage); // Оновлення загальної шкоди
 
         const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
         document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
