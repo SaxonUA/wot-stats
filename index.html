@@ -50,7 +50,7 @@
 
     .info-box {
       background-color: #1d1d1d;
-      background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0px, rgba(255, 255, 255, 0.3) 10px, transparent 10px, transparent 20px);
+      background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px);
       padding: 10px 30px;
       font-size: 24px;
       border-radius: 0;
@@ -154,7 +154,7 @@
       padding-bottom: 4px;
     }
     .extra-info-title {
-      font-size: 28px;
+      font-size: 34px;
       text-align: center;
       color: white;
       text-transform: capitalize;
@@ -180,12 +180,20 @@
       color: white;
       text-shadow: 1px 1px 2px black;
     }
+    .extra-info-meta {
+      margin-bottom: 15px;
+      font-size: 16px;
+      text-shadow: 1px 1px 2px black;
+      line-height: 1.4;
+      color: #FFD700;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="row">
-      <div class="label">Боїв:</div>
+      <div class="label">Бій:</div>
       <div class="plain-number" id="battles">0</div>
       <div class="label">Перемоги:</div>
       <div class="plain-number" id="wins">0</div>
@@ -222,18 +230,21 @@
 
   <div class="extra-info">
     <div class="extra-info-header">
+      <div style="flex:1"> <div class="extra-info-meta">
+        <div id="currentDate">Дата</div>
+        <div id="currentTime">Час по Києву</div>
+      </div></div>
       <div style="flex:1"></div>
       <div style="flex:1"></div>
-      <div style="flex:1"></div>
-      <div class="extra-info-title">Кількість<br>очок</div>
+      <div class="extra-info-title">Кількість<br>Очок</div>
     </div>
     <div class="extra-info-row">
       <div>Найгірший бій:</div>
-      <div class="extra-info-value" id="best">0</div>
+      <div class="extra-info-value" id="worst">0</div>
     </div>
     <div class="extra-info-row">
       <div>Найкращий бій:</div>
-      <div class="extra-info-value" id="worst">0</div>
+      <div class="extra-info-value" id="best">0</div>
     </div>
     <div class="extra-info-divider-top"></div>
     <div class="extra-info-row">
@@ -261,8 +272,8 @@
         const avgSaxon = await fetchCell("F1");
         const avgAtaman = await fetchCell("G1");
         const totalPoints = await fetchCell("H1");
-        const worst = await fetchCell("K1");
-        const best = await fetchCell("L1");
+        const best = await fetchCell("K1");
+        const worst = await fetchCell("L1");
         const last = await fetchCell("M1");
 
         document.getElementById("battles").textContent = battles;
@@ -278,6 +289,13 @@
         document.getElementById("best").textContent = best;
         document.getElementById("worst").textContent = worst;
         document.getElementById("last").textContent = last;
+
+        const now = new Date();
+        const optionsDate = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        const optionsTime = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Europe/Kyiv' };
+
+        document.getElementById("currentDate").textContent = now.toLocaleDateString('uk-UA', optionsDate);
+        document.getElementById("currentTime").textContent = now.toLocaleTimeString('uk-UA', optionsTime);
 
       } catch (e) {
         console.error("Помилка при отриманні даних з таблиці:", e);
