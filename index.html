@@ -2,37 +2,37 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>DUO STREAM — Saxon & Ataman</title>
+  <title>Duo Stream — Full Width</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      padding: 40px;
-      background-color: #111;
-      font-family: sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      background-color: #000;
+      height: 100%;
+      width: 100%;
     }
+
     .container {
       display: flex;
       flex-direction: row;
-      gap: 40px;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      width: 100%;
     }
+
     .stream-frame {
-      border: 4px solid #333;
-      border-radius: 16px;
+      flex: 1;
+      margin: 0 5px;
+      height: 100%;
+      box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .stream-frame:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
-    }
+
     iframe {
-      width: 640px;
-      height: 360px;
+      width: 100%;
+      height: 100%;
       border: none;
     }
   </style>
@@ -43,6 +43,7 @@
     <div class="stream-frame">
       <iframe src="https://www.youtube.com/embed/Sjd6E91HUcE?autoplay=1" allowfullscreen></iframe>
     </div>
+
     <!-- Правий стрім -->
     <div class="stream-frame">
       <iframe src="https://www.youtube.com/embed/Zx2stJ1vgqY?autoplay=1" allowfullscreen></iframe>
