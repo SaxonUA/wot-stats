@@ -20,7 +20,7 @@
 
     table {
       border-collapse: collapse;
-      width: 400px;
+      width: 320px;
       background-color: rgba(0, 0, 0, 0.7);
       border-radius: 12px;
       overflow: hidden;
@@ -28,7 +28,7 @@
     }
 
     thead tr {
-      background: rgba(0, 0, 0, 0.85); /* темніша шапка */
+      background: rgba(0, 0, 0, 0.85);
     }
 
     th {
@@ -44,8 +44,7 @@
       text-align: left;
     }
 
-    th:nth-child(3),
-    th:nth-child(4) {
+    th:nth-child(3) {
       text-align: right;
     }
 
@@ -69,8 +68,7 @@
       text-align: center;
     }
 
-    td:nth-child(3),
-    td:nth-child(4) {
+    td:nth-child(3) {
       text-align: right;
     }
 
@@ -102,12 +100,11 @@
       <tr>
         <th>Танк</th>
         <th>Бої</th>
-        <th>Загальна шкода</th>
         <th>Середня шкода</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td colspan="4" style="text-align:center;">Завантаження...</td></tr>
+      <tr><td colspan="3" style="text-align:center;">Завантаження...</td></tr>
     </tbody>
   </table>
 
@@ -134,10 +131,7 @@
           if (tank === "Centurion Action X") tank = "Centurion AX";
 
           const battles = Number(row.c[1]?.v || 0);
-          const damage = Number(row.c[2]?.v || 0);
           const avg = Number(row.c[3]?.v || 0);
-
-          const damageFormatted = damage.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
           const avgFormatted = avg.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
 
           let avgColor = "#ffa500";
@@ -155,7 +149,6 @@
           tr.innerHTML = `
             <td>${tank}</td>
             <td class="${flashIfChanged('battles', battles)}">${battles}</td>
-            <td class="${flashIfChanged('damage', damage)}">${damageFormatted}</td>
             <td class="${flashIfChanged('avg', avg)}" style="color: ${avgColor}; font-weight: 700;">${avgFormatted}</td>
           `;
           tbody.appendChild(tr);
@@ -163,11 +156,11 @@
           if (index < rows.length - 1) {
             const sep = document.createElement("tr");
             sep.className = "separator";
-            sep.innerHTML = `<td colspan="4"></td>`;
+            sep.innerHTML = `<td colspan="3"></td>`;
             tbody.appendChild(sep);
           }
 
-          previousData[tank] = { battles, damage, avg };
+          previousData[tank] = { battles, avg };
         });
 
       } catch (err) {
