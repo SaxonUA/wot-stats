@@ -28,7 +28,7 @@
     }
 
     thead tr {
-      background: linear-gradient(to right, #FF8C00, #a82302);
+      background: rgba(0, 0, 0, 0.85); /* темніша шапка */
     }
 
     th {
@@ -167,7 +167,6 @@
             tbody.appendChild(sep);
           }
 
-          // Save current values
           previousData[tank] = { battles, damage, avg };
         });
 
