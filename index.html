@@ -2,344 +2,160 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>WOT Duplet Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WoT Статистика Saxon</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      padding: 0;
-      background: #222;
-      font-family: Arial, sans-serif;
-      color: white;
-      font-weight: bold;
-      width: 100%;
-      height: 100vh;
-    }
-    .container {
+      font-family: 'Segoe UI', sans-serif;
+      background: transparent;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      padding: 20px;
-      max-width: 540px;
-      margin: 0 auto;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-    }
-    .row {
-      display: flex;
+      align-items: center;
       justify-content: flex-start;
-      align-items: center;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 5px 10px;
-      border-radius: 5px;
-    }
-    .plain-number {
-      font-size: 28px;
-      margin-left: -10px;
-      text-shadow: 1px 1px 4px black;
-      transition: all 0.3s ease-in-out;
-    }
-    #battles { color: #FFD700; }
-    #wins { color: cyan; }
-    #frags { color: violet; margin-left: -10px; }
-
-    .info-box {
-      background-color: #1d1d1d;
-      background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px);
-      padding: 10px 30px;
-      font-size: 24px;
-      border-radius: 0;
-      color: white;
-      text-shadow: 1px 1px 2px black;
-      margin-left: auto;
-      transition: all 0.3s ease-in-out;
-    }
-    .value {
-      font-size: 38px;
-      font-weight: bold;
-      color: #fff;
-      background: repeating-linear-gradient(-45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
-      padding: 5px 15px;
-      border-radius: 5px;
-      transition: all 0.3s ease-in-out;
-    }
-    .label {
-      font-size: 28px;
-      text-transform: uppercase;
-      margin-right: 10px;
-      text-shadow: 1px 1px 4px black;
-      transition: all 0.3s ease-in-out;
-    }
-    .team-name {
-      font-family: 'Russo One', sans-serif;
-      font-size: 46px;
-      letter-spacing: 1px;
-      text-shadow: 2px 2px 5px black;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 26px;
-      border-bottom: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
-      padding: 10px;
-      margin-bottom: 10px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 5px;
-    }
-    .section-header-left {
-      flex: 1;
-      text-align: left;
-      color: white;
-    }
-    .section-header-right {
-      flex: 1;
-      text-align: right;
-    }
-    .team-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .team-label {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    .team-logo {
-      width: 63px;
-      height: 63px;
-      object-fit: contain;
-    }
-    .points-block {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      border-top: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
-      padding-top: 10px;
-    }
-    .points-label {
-      font-size: 26px;
-      text-transform: uppercase;
-    }
-    #totalPoints {
-      font-size: 56px;
-    }
-    .extra-info {
-      margin: 25px auto 0;
+      height: 100vh;
+      margin: 0;
       padding: 20px;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      font-size: 26px;
-      font-weight: bold;
-      text-shadow: 1px 1px 3px black;
-      max-width: 540px;
-      position: relative;
     }
-    .extra-info-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: right;
-      margin-bottom: 10px;
-      border-bottom: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
-      padding-bottom: 4px;
-    }
-    .extra-info-title {
-      font-size: 25px;
-      text-align: right;
-      color: white;
-      line-height: 1.0;
-      flex: 1;
-    }
-    .extra-info-divider-top {
-      border-top: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
-      margin: 10px 0;
-    }
-    .extra-info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+
+    .logo {
+      width: 120px;
       margin-bottom: 10px;
     }
-    .extra-info-value {
-      background: repeating-linear-gradient(-45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
-      padding: 5px 15px;
-      font-size: 28px;
-      border-radius: 5px;
-      color: white;
-      text-shadow: 1px 1px 2px black;
+
+    table {
+      border-collapse: collapse;
+      width: 400px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 12px;
+      overflow: hidden;
     }
-    .extra-info-meta {
-      margin-bottom: 15px;
-      font-size: 16px;
-      text-shadow: 1px 1px 2px black;
-      line-height: 1.4;
-      color: #FFD700;
+
+    th {
+      background-color: #cc5200;
+      color: white;
+      padding: 10px;
+      font-size: 15px;
+    }
+
+    th:nth-child(1) {
       text-align: left;
     }
 
-    /* Анімація */
-    .value.updated, .plain-number.updated, .extra-info-value.updated {
-      animation: flash 0.4s ease-in-out;
+    th:nth-child(2) {
+      text-align: center;
     }
 
-    @keyframes flash {
-      0% {
-        background-color: rgba(255, 255, 255, 0.5);
-        transform: scale(1.15);
-      }
-      100% {
-        background-color: transparent;
-        transform: scale(1);
-      }
+    th:nth-child(3),
+    th:nth-child(4) {
+      text-align: right;
+    }
+
+    td {
+      padding: 10px 12px;
+      font-size: 17px;
+      color: white;
+      transition: color 0.3s;
+    }
+
+    td:nth-child(1) {
+      text-align: left;
+    }
+
+    td:nth-child(2) {
+      text-align: center;
+    }
+
+    td:nth-child(3),
+    td:nth-child(4) {
+      text-align: right;
+    }
+
+    tr.separator td {
+      padding: 0;
+      height: 2px;
+      background: linear-gradient(to right, #ff9900, #ff3300);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="label">Бій:</div>
-      <div class="plain-number" id="battles">0</div>
-      <div class="label">Перемоги:</div>
-      <div class="plain-number" id="wins">0</div>
-      <div class="label">Фраги:</div>
-      <div class="plain-number" id="frags">0</div>
-    </div>
 
-    <div class="section-header">
-      <div class="section-header-left" id="winPercent">WIN %: <span style="color: lime">0%</span></div>
-      <div class="section-header-right">Середня<br>шкода</div>
-    </div>
+  <!-- ЛОГО -->
+  <img class="logo" src="ava22.png" alt="Saxon Logo">
 
-    <div class="team-row">
-      <div class="team-label">
-        <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/ataman.png" alt="Ataman">
-        <div class="team-name">ATAMAN</div>
-      </div>
-      <div class="info-box value" id="avgAtaman">0</div>
-    </div>
-
-    <div class="team-row">
-      <div class="team-label">
-        <img class="team-logo" src="https://raw.githubusercontent.com/SaxonUA/wot-stats/main/saxon.png" alt="Saxon">
-        <div class="team-name">SAXON</div>
-      </div>
-      <div class="info-box value" id="avgSaxon">0</div>
-    </div>
-
-    <div class="points-block">
-      <div class="points-label">Загальна к-ть очок:</div>
-      <div class="info-box value" id="totalPoints">0</div>
-    </div>
-  </div>
-
-  <div class="extra-info">
-    <div class="extra-info-header">
-      <div class="extra-info-meta" id="datetimeWrapper">
-        <div id="currentDate">Дата</div>
-        <div id="currentTime">Час по Києву</div>
-      </div>
-      <div style="flex:1"></div>
-      <div class="extra-info-title">Кількість<br>очок</div>
-    </div>
-    <div class="extra-info-row">
-      <div>Найгірший бій:</div>
-      <div class="extra-info-value" id="worst">0</div>
-    </div>
-    <div class="extra-info-row">
-      <div>Найкращий бій:</div>
-      <div class="extra-info-value" id="best">0</div>
-    </div>
-    <div class="extra-info-divider-top"></div>
-    <div class="extra-info-row">
-      <div>Останній бій:</div>
-      <div class="extra-info-value" id="last">0</div>
-    </div>
-  </div>
+  <!-- ТАБЛИЦЯ -->
+  <table id="tankTable">
+    <thead>
+      <tr>
+        <th>Танк</th>
+        <th>Бої</th>
+        <th>Загальна шкода</th>
+        <th>Середня шкода</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="4" style="text-align:center;">Завантаження...</td></tr>
+    </tbody>
+  </table>
 
   <script>
-    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const SHEET_NAME = "duplet_all";
+    async function fetchData() {
+      const sheetId = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+      const sheetName = "ST";
+      const range = "A2:D3";
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&range=${range}`;
 
-    async function fetchCell(range) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_NAME}&range=${range}&tqx=out:csv`;
-      const res = await fetch(url);
-      const text = await res.text();
-      return text.trim().replace(/^"|"$/g, "");
-    }
-
-    function formatTimeUnit(unit) {
-      return unit < 10 ? `0${unit}` : unit;
-    }
-
-    function updateDateTime() {
-      const now = new Date();
-      const dateStr = `${formatTimeUnit(now.getDate())}.${formatTimeUnit(now.getMonth() + 1)}.${now.getFullYear()}`;
-      const timeStr = `${formatTimeUnit(now.getHours())}:${formatTimeUnit(now.getMinutes())}:${formatTimeUnit(now.getSeconds())}`;
-
-      const dateElem = document.getElementById("currentDate");
-      const timeElem = document.getElementById("currentTime");
-
-      if (dateElem && timeElem) {
-        dateElem.textContent = dateStr;
-        timeElem.textContent = timeStr;
-      }
-    }
-
-    function animateUpdate(id, newValue) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (el.textContent !== newValue) {
-        el.textContent = newValue;
-        el.classList.add("updated");
-        setTimeout(() => el.classList.remove("updated"), 400);
-      }
-    }
-
-    async function updateOverlay() {
       try {
-        const battles = await fetchCell("A1");
-        const wins = await fetchCell("B1");
-        const frags = await fetchCell("C1");
-        const avgSaxon = await fetchCell("F1");
-        const avgAtaman = await fetchCell("G1");
-        const totalPoints = await fetchCell("H1");
-        const best = await fetchCell("K1");
-        const worst = await fetchCell("L1");
-        const last = await fetchCell("M1");
+        const response = await fetch(url);
+        const text = await response.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
 
-        animateUpdate("battles", battles);
-        animateUpdate("wins", wins);
-        animateUpdate("frags", frags);
-        animateUpdate("avgSaxon", avgSaxon);
-        animateUpdate("avgAtaman", avgAtaman);
-        animateUpdate("totalPoints", totalPoints);
-        animateUpdate("best", best);
-        animateUpdate("worst", worst);
-        animateUpdate("last", last);
+        const tbody = document.querySelector("#tankTable tbody");
+        tbody.innerHTML = "";
 
-        const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
-        document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
+        rows.forEach((row, index) => {
+          const tank = row.c[0]?.v || "-";
+          const battles = Number(row.c[1]?.v || 0);
+          const damage = Number(row.c[2]?.v || 0);
+          const avg = Number(row.c[3]?.v || 0);
 
-      } catch (e) {
-        console.error("Помилка при отриманні даних з таблиці:", e);
+          const damageFormatted = damage.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
+          const avgFormatted = avg.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
+
+          let avgColor = "#ffa500"; // <2500 - помаранчевий
+          if (avg >= 2500 && avg < 3000) avgColor = "#00ff00";       // зелений
+          else if (avg >= 3000 && avg < 3500) avgColor = "#00e5ff";  // бірюзовий
+          else if (avg >= 3500) avgColor = "#d400ff";                // фіолетовий
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${tank}</td>
+            <td>${battles}</td>
+            <td>${damageFormatted}</td>
+            <td style="color: ${avgColor}; font-weight: bold;">${avgFormatted}</td>
+          `;
+          tbody.appendChild(tr);
+
+          if (index < rows.length - 1) {
+            const sep = document.createElement("tr");
+            sep.className = "separator";
+            sep.innerHTML = `<td colspan="4"></td>`;
+            tbody.appendChild(sep);
+          }
+        });
+
+      } catch (err) {
+        console.error("Помилка при отриманні даних:", err);
       }
     }
 
-    updateOverlay();
-    updateDateTime();
-    setInterval(updateOverlay, 10000);
-    setInterval(updateDateTime, 1000);
+    fetchData();
+    setInterval(fetchData, 30000);
   </script>
+
 </body>
 </html>
