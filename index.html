@@ -28,7 +28,7 @@
     }
 
     thead tr {
-       background: linear-gradient(to right, #FF8C00, #a82302);
+      background: linear-gradient(to right, #FF8C00, #a82302);
     }
 
     th {
@@ -57,6 +57,7 @@
       line-height: 1.4;
       text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
       white-space: nowrap;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     td:nth-child(1) {
@@ -83,13 +84,14 @@
       border-bottom: none;
     }
 
-    #updateTime {
-      color: #cccccc;
-      font-size: 12px;
-      margin-top: 8px;
-      font-style: italic;
-      text-align: right;
-      width: 400px;
+    .flash {
+      background-color: rgba(255, 255, 255, 0.2);
+      animation: flashAnim 0.5s ease;
+    }
+
+    @keyframes flashAnim {
+      0%   { background-color: rgba(255,255,255,0.3); }
+      100% { background-color: transparent; }
     }
   </style>
 </head>
@@ -109,9 +111,9 @@
     </tbody>
   </table>
 
-  <div id="updateTime">Останнє оновлення: ...</div>
-
   <script>
+    let previousData = {};
+
     async function fetchData() {
       const sheetId = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
       const sheetName = "ST";
@@ -144,11 +146,17 @@
           else if (avg >= 3500) avgColor = "#d400ff";
 
           const tr = document.createElement("tr");
+
+          const flashIfChanged = (key, value) => {
+            const prev = previousData[tank]?.[key];
+            return prev !== undefined && prev !== value ? 'flash' : '';
+          };
+
           tr.innerHTML = `
             <td>${tank}</td>
-            <td>${battles}</td>
-            <td>${damageFormatted}</td>
-            <td style="color: ${avgColor}; font-weight: 700;">${avgFormatted}</td>
+            <td class="${flashIfChanged('battles', battles)}">${battles}</td>
+            <td class="${flashIfChanged('damage', damage)}">${damageFormatted}</td>
+            <td class="${flashIfChanged('avg', avg)}" style="color: ${avgColor}; font-weight: 700;">${avgFormatted}</td>
           `;
           tbody.appendChild(tr);
 
@@ -158,12 +166,10 @@
             sep.innerHTML = `<td colspan="4"></td>`;
             tbody.appendChild(sep);
           }
-        });
 
-        // Показ часу по Києву
-        const now = new Date();
-        const timeKyiv = now.toLocaleTimeString('uk-UA', { timeZone: 'Europe/Kyiv' });
-        document.getElementById("updateTime").textContent = `Останнє оновлення: ${timeKyiv}`;
+          // Save current values
+          previousData[tank] = { battles, damage, avg };
+        });
 
       } catch (err) {
         console.error("Помилка при отриманні даних:", err);
