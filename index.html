@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WoT Статистика Saxon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Poppins', sans-serif;
       background: transparent;
       display: flex;
       flex-direction: column;
@@ -17,32 +18,26 @@
       padding: 20px;
     }
 
-    .logo {
-      width: 120px;
-      margin-bottom: 10px;
-    }
-
     table {
       border-collapse: collapse;
       width: 400px;
       background-color: rgba(0, 0, 0, 0.7);
       border-radius: 12px;
       overflow: hidden;
+      font-variant-numeric: tabular-nums;
     }
 
     th {
       background-color: #cc5200;
       color: white;
-      padding: 10px;
+      padding: 10px 12px;
       font-size: 15px;
+      font-weight: 700;
+      text-align: center;
     }
 
     th:nth-child(1) {
       text-align: left;
-    }
-
-    th:nth-child(2) {
-      text-align: center;
     }
 
     th:nth-child(3),
@@ -51,14 +46,18 @@
     }
 
     td {
-      padding: 10px 12px;
-      font-size: 17px;
+      padding: 8px 12px;
+      font-size: 16px;
+      font-weight: 600;
       color: white;
-      transition: color 0.3s;
+      line-height: 1.4;
+      text-shadow: 0 0 1px rgba(0, 0, 0, 0.4);
+      white-space: nowrap;
     }
 
     td:nth-child(1) {
       text-align: left;
+      font-size: 15px;
     }
 
     td:nth-child(2) {
@@ -72,7 +71,7 @@
 
     tr.separator td {
       padding: 0;
-      height: 2px;
+      height: 1px;
       background: linear-gradient(to right, #ff9900, #ff3300);
     }
 
@@ -83,10 +82,6 @@
 </head>
 <body>
 
-  <!-- ЛОГО -->
-  <img class="logo" src="ava22.png" alt="Saxon Logo">
-
-  <!-- ТАБЛИЦЯ -->
   <table id="tankTable">
     <thead>
       <tr>
@@ -118,7 +113,11 @@
         tbody.innerHTML = "";
 
         rows.forEach((row, index) => {
-          const tank = row.c[0]?.v || "-";
+          let tank = row.c[0]?.v || "-";
+
+          // Замінюємо назву на коротшу
+          if (tank === "Centurion Action X") tank = "Centurion AX";
+
           const battles = Number(row.c[1]?.v || 0);
           const damage = Number(row.c[2]?.v || 0);
           const avg = Number(row.c[3]?.v || 0);
@@ -136,7 +135,7 @@
             <td>${tank}</td>
             <td>${battles}</td>
             <td>${damageFormatted}</td>
-            <td style="color: ${avgColor}; font-weight: bold;">${avgFormatted}</td>
+            <td style="color: ${avgColor}; font-weight: 700;">${avgFormatted}</td>
           `;
           tbody.appendChild(tr);
 
