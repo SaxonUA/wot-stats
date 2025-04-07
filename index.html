@@ -28,7 +28,7 @@
     }
 
     thead tr {
-      background: linear-gradient(to right, #FF8C00, #FFA500); /* Градієнт на весь рядок */
+      background: linear-gradient(to right, #FF8C00, #FFA500);
     }
 
     th {
@@ -82,6 +82,15 @@
     tr:last-child td {
       border-bottom: none;
     }
+
+    #updateTime {
+      color: #cccccc;
+      font-size: 12px;
+      margin-top: 8px;
+      font-style: italic;
+      text-align: right;
+      width: 400px;
+    }
   </style>
 </head>
 <body>
@@ -99,6 +108,8 @@
       <tr><td colspan="4" style="text-align:center;">Завантаження...</td></tr>
     </tbody>
   </table>
+
+  <div id="updateTime">Останнє оновлення: ...</div>
 
   <script>
     async function fetchData() {
@@ -127,10 +138,10 @@
           const damageFormatted = damage.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
           const avgFormatted = avg.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
 
-          let avgColor = "#ffa500"; // <2500
-          if (avg >= 2500 && avg < 3000) avgColor = "#00ff00"; // зелений
-          else if (avg >= 3000 && avg < 3500) avgColor = "#00e5ff"; // бірюзовий
-          else if (avg >= 3500) avgColor = "#d400ff"; // фіолетовий
+          let avgColor = "#ffa500";
+          if (avg >= 2500 && avg < 3000) avgColor = "#00ff00";
+          else if (avg >= 3000 && avg < 3500) avgColor = "#00e5ff";
+          else if (avg >= 3500) avgColor = "#d400ff";
 
           const tr = document.createElement("tr");
           tr.innerHTML = `
@@ -148,6 +159,11 @@
             tbody.appendChild(sep);
           }
         });
+
+        // Показ часу по Києву
+        const now = new Date();
+        const timeKyiv = now.toLocaleTimeString('uk-UA', { timeZone: 'Europe/Kyiv' });
+        document.getElementById("updateTime").textContent = `Останнє оновлення: ${timeKyiv}`;
 
       } catch (err) {
         console.error("Помилка при отриманні даних:", err);
