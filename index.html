@@ -27,8 +27,12 @@
       font-variant-numeric: tabular-nums;
     }
 
+    thead tr {
+      background: linear-gradient(to right, #FF8C00, #FFA500); /* Градієнт на весь рядок */
+    }
+
     th {
-      background-color: rgba(255, 140, 0, 0.8); /* #FF8C00 прозорий */
+      background: transparent;
       color: white;
       padding: 10px 12px;
       font-size: 15px;
@@ -123,10 +127,10 @@
           const damageFormatted = damage.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
           const avgFormatted = avg.toLocaleString('uk-UA', { maximumFractionDigits: 0 });
 
-          let avgColor = "#ffa500"; // <2500 - помаранчевий
-          if (avg >= 2500 && avg < 3000) avgColor = "#00ff00";       // зелений
-          else if (avg >= 3000 && avg < 3500) avgColor = "#00e5ff";  // бірюзовий
-          else if (avg >= 3500) avgColor = "#d400ff";                // фіолетовий
+          let avgColor = "#ffa500"; // <2500
+          if (avg >= 2500 && avg < 3000) avgColor = "#00ff00"; // зелений
+          else if (avg >= 3000 && avg < 3500) avgColor = "#00e5ff"; // бірюзовий
+          else if (avg >= 3500) avgColor = "#d400ff"; // фіолетовий
 
           const tr = document.createElement("tr");
           tr.innerHTML = `
