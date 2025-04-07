@@ -28,7 +28,7 @@
     }
 
     th {
-      background-color: #cc5200;
+      background-color: rgba(204, 82, 0, 0.8); /* прозорий помаранчевий */
       color: white;
       padding: 10px 12px;
       font-size: 15px;
@@ -114,8 +114,6 @@
 
         rows.forEach((row, index) => {
           let tank = row.c[0]?.v || "-";
-
-          // Замінюємо назву на коротшу
           if (tank === "Centurion Action X") tank = "Centurion AX";
 
           const battles = Number(row.c[1]?.v || 0);
