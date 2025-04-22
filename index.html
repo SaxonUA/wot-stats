@@ -25,7 +25,7 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
     .title {
-      font-size: 35px;
+      font-size: 20px;
       margin-top: 10px;
     }
     .score {
@@ -46,11 +46,11 @@
     }
     .map-name {
       text-align: right;
-      width: 180px; /* ширина назв карт */
+      width: 180px;
       word-break: break-word;
     }
     .map-score {
-      text-align: right; /* цифри праворуч */
+      text-align: right;
       min-width: 30px;
     }
     .positive { color: #00ff00; }
@@ -62,7 +62,7 @@
     }
     .rank-progress {
       position: relative;
-      height: 6px; /* товстіша лінія */
+      height: 6px;
       background: #555;
       border-radius: 3px;
       overflow: hidden;
@@ -85,17 +85,17 @@
       height: 8px;
     }
     .ticks-top { top: -8px; }
-    .ticks-bottom { top: 6px; } /* підняв під товщу лінію */
+    .ticks-bottom { top: 6px; }
     .tick {
       position: absolute;
       width: 1px;
       background: white;
-      height: 4px; /* маленька розмітка */
+      height: 4px;
     }
     .labels {
       display: flex;
       justify-content: space-between;
-      font-size: 18px; /* збільшив літери дивізіону */
+      font-size: 18px;
       margin-top: 10px;
       color: #aaa;
     }
@@ -107,7 +107,6 @@
   </style>
 </head>
 <body>
-
   <div class="card">
     <div class="title" id="rank-title">...</div>
     <div class="score" id="rank-score">...</div>
@@ -164,13 +163,15 @@
             document.getElementById('labels').innerHTML = divisions.map((div, i) => `<span class="${i === divisionIndex ? 'active' : ''}">${div}</span>`).join('');
           }
 
-          const mapHTML = rows.slice(2, 7).filter(row => row.c[6] && row.c[6].v).map(row => {
-            const mapName = row.c[6].v;
-            const score = row.c[7] ? row.c[7].v : 0;
-            const scoreClass = score >= 0 ? 'positive' : 'negative';
-            const displayScore = Math.abs(score);
-            return `<div class="map-item"><span class="map-name">${mapName}</span><span class="map-score ${scoreClass}">${displayScore}</span></div>`;
-          }).join('');
+          const mapHTML = rows.slice(2, 7)
+            .filter(row => row.c[6] && row.c[6].v && row.c[7] != null)
+            .map(row => {
+              const mapName = row.c[6].v;
+              const score = row.c[7].v;
+              const scoreClass = score >= 0 ? 'positive' : 'negative';
+              const displayScore = Math.abs(score);
+              return `<div class="map-item"><span class="map-name">${mapName}</span><span class="map-score ${scoreClass}">${displayScore}</span></div>`;
+            }).join('');
           document.getElementById('map-list').innerHTML = mapHTML;
         });
     }
