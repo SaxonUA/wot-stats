@@ -2,233 +2,186 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>WOT Duplet Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ранг</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      padding: 0;
       background: #222;
-      font-family: Arial, sans-serif;
       color: white;
-      font-weight: bold;
-      width: 100%;
-      height: 100vh;
-    }
-    .container {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      align-items: center;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .card {
+      background: rgba(0, 0, 0, 0.6);
+      width: 200px;
       padding: 20px;
-      max-width: 540px;
-      margin: 0 auto;
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
+      border-radius: 15px;
+      text-align: center;
+      position: relative;
+      margin-top: 40px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
-    .row {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 10px;
-      background: rgba(0, 0, 0, 0.5);
-      padding: 5px 10px;
-      border-radius: 5px;
-    }
-    .plain-number {
-      font-size: 28px;
-      margin-left: -10px;
-      text-shadow: 1px 1px 4px black;
-      transition: all 0.3s ease-in-out;
-    }
-    #battles { color: #FFD700; }
-    #wins { color: cyan; }
-    #frags { color: violet; margin-left: -10px; }
-
-    .info-box {
-      background-color: #1d1d1d;
-      background-image: repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0px, rgba(255, 255, 255, 0.1) 10px, transparent 10px, transparent 20px);
-      padding: 10px 30px;
+    .letter-e {
+      position: absolute;
+      top: 10px;
+      right: 10px;
       font-size: 24px;
-      border-radius: 0;
-      color: white;
-      text-shadow: 1px 1px 2px black;
-      margin-left: auto;
-      transition: all 0.3s ease-in-out;
-    }
-    .value {
-      font-size: 38px;
       font-weight: bold;
-      color: #fff;
-      background: repeating-linear-gradient(-45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
-      padding: 5px 15px;
-      border-radius: 5px;
-      transition: all 0.3s ease-in-out;
     }
-    .label {
+    .title {
+      font-size: 18px;
+      margin-top: 30px;
+    }
+    .score {
       font-size: 28px;
-      text-transform: uppercase;
-      margin-right: 10px;
-      text-shadow: 1px 1px 4px black;
-      transition: all 0.3s ease-in-out;
+      font-weight: bold;
+      margin: 10px 0;
     }
-    .team-name {
-      font-family: 'Russo One', sans-serif;
-      font-size: 46px;
-      letter-spacing: 1px;
-      text-shadow: 2px 2px 5px black;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 26px;
-      border-bottom: 4px solid;
-      border-image: linear-gradient(to right, orange, red) 1;
-      padding: 10px;
-      margin-bottom: 10px;
-      background: rgba(0,0,0,0.5);
-      border-radius: 5px;
-    }
-    .section-header-left {
-      flex: 1;
+    .map-list {
       text-align: left;
-      color: white;
+      margin-top: 10px;
+      font-size: 14px;
     }
-    .section-header-right {
-      flex: 1;
-      text-align: right;
-    }
-    .team-row {
+    .map-item {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      margin: 2px 0;
     }
-    .team-label {
+    .positive { color: #00ff00; }
+    .negative { color: #ff6666; }
+
+    .progress-container {
+      width: 300px;
+      margin-top: 40px;
+      text-align: center;
+      position: relative;
+    }
+    .rank-progress {
+      position: relative;
+      height: 4px;
+      background: #555;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #ff9900, #ffcc00);
+      animation: pulse 1.5s infinite alternate;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+    .ticks {
+      position: absolute;
+      top: -8px;
+      width: 100%;
+      height: 20px;
+    }
+    .tick {
+      position: absolute;
+      width: 1px;
+      background: white;
+      height: 8px;
+    }
+    .ticks-bottom .tick {
+      top: 12px;
+    }
+    .labels {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 8px;
-    }
-    .team-logo {
-      width: 63px;
-      height: 63px;
-      object-fit: contain;
-    }
-    .extra-info-value {
-      background: repeating-linear-gradient(-45deg, rgba(255,255,255,0.3), rgba(255,255,255,0.3) 10px, transparent 10px, transparent 20px);
-      padding: 5px 15px;
-      font-size: 28px;
-      border-radius: 5px;
-      color: violet;
-      text-shadow: 1px 1px 2px black;
-      max-width: fit-content;
-    }
-
-    .value.updated, .plain-number.updated, .extra-info-value.updated {
-      animation: flash 0.4s ease-in-out;
-    }
-
-    @keyframes flash {
-      0% {
-        background-color: rgba(255, 255, 255, 0.5);
-        transform: scale(1.15);
-      }
-      100% {
-        background-color: transparent;
-        transform: scale(1);
-      }
+      justify-content: space-between;
+      font-size: 12px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="label">Бій:</div>
-      <div class="plain-number" id="battles">0</div>
-      <div class="label">Перемоги:</div>
-      <div class="plain-number" id="wins">0</div>
-      <div class="label">Фраги:</div>
-      <div class="plain-number" id="frags">0</div>
-    </div>
 
-    <div class="section-header">
-      <div class="section-header-left" id="winPercent">WIN %: <span style="color: lime">0%</span></div>
-      <div class="section-header-right">Середня<br>шкода</div>
-    </div>
+  <div class="card">
+    <div class="letter-e" id="rank-letter">E</div>
+    <div class="title" id="rank-title">...</div>
+    <div class="score" id="rank-score">...</div>
+    <div class="map-list" id="map-list"></div>
+  </div>
 
-    <div class="team-row">
-      <div class="team-label">
-        <div class="team-name">KOST9IH</div>
-        <div class="extra-info-value" id="fragsAtaman">0 фраги</div>
-      </div>
-      <div class="info-box value" id="avgAtaman">0</div>
+  <div class="progress-container">
+    <div class="rank-progress" id="rank-progress">
+      <div class="progress-fill" id="progress-fill"></div>
+      <div class="ticks ticks-top" id="ticks-top"></div>
+      <div class="ticks ticks-bottom" id="ticks-bottom"></div>
     </div>
-
-    <div class="team-row">
-      <div class="team-label">
-        <div class="team-name">prIGORod</div>
-        <div class="extra-info-value" id="fragsSaxon">0 фраги</div>
-      </div>
-      <div class="info-box value" id="avgSaxon">0</div>
-    </div>
+    <div class="labels" id="labels"></div>
   </div>
 
   <script>
-    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const SHEET_NAME = "duplet_all";
+    const total = 3000;
+    const ranks = [
+      { name: 'Залізо', from: 0, to: 499 },
+      { name: 'Бронза', from: 500, to: 999 },
+      { name: 'Срібло', from: 1000, to: 1499 },
+      { name: 'Золото', from: 1500, to: 1999 },
+      { name: 'Чемпіон', from: 2000, to: 2999 }
+    ];
+    const divisions = ['E', 'D', 'C', 'B', 'A'];
 
-    async function fetchCell(range) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_NAME}&range=${range}&tqx=out:csv`;
-      const res = await fetch(url);
-      const text = await res.text();
-      return text.trim().replace(/^"|"$/g, "");
+    function loadData() {
+      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoiDu4o7q11-jcFeek7kfCQjFDBvLQL-ipMv_OFcxRXSxQC5xiDVR_PCzhDmBmxrNVdSLvCG_2lXJ/pub?gid=1485670007&single=true&output=csv')
+        .then(response => response.text())
+        .then(csv => {
+          const rows = csv.split('\n').map(row => row.split(','));
+
+          const rankLetter = rows[2][7]; // H3
+          document.getElementById('rank-letter').innerText = rankLetter;
+
+          const rankTitle = rows[2][6]; // G3
+          document.getElementById('rank-title').innerText = rankTitle;
+
+          const rank = parseInt(rows[3][6]); // G4
+          document.getElementById('rank-score').innerText = rank;
+
+          const mapList = document.getElementById('map-list');
+          mapList.innerHTML = '';
+          for (let i = 4; i <= 8; i++) {
+            const mapName = rows[i][6];
+            const mapScore = rows[i][7];
+            const scoreClass = mapScore >= 0 ? 'positive' : 'negative';
+            mapList.innerHTML += `<div class="map-item"><span>${mapName}</span><span class="${scoreClass}">${mapScore}</span></div>`;
+          }
+
+          const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
+
+          const fill = document.getElementById('progress-fill');
+          const rankRange = currentRank.to - currentRank.from + 1;
+          const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
+          fill.style.width = `${percentInRank}%`;
+
+          const ticksTop = document.getElementById('ticks-top');
+          const ticksBottom = document.getElementById('ticks-bottom');
+          ticksTop.innerHTML = '';
+          ticksBottom.innerHTML = '';
+          divisions.forEach((div, i) => {
+            const pos = (i / (divisions.length - 1)) * 100;
+            ['ticks-top', 'ticks-bottom'].forEach(container => {
+              const tick = document.createElement('div');
+              tick.classList.add('tick');
+              tick.style.left = `${pos}%`;
+              document.getElementById(container).appendChild(tick);
+            });
+          });
+
+          const labels = document.getElementById('labels');
+          labels.innerHTML = divisions.map(div => `<span>${div}</span>`).join('');
+        });
     }
 
-    function formatTimeUnit(unit) {
-      return unit < 10 ? `0${unit}` : unit;
-    }
-
-    function animateUpdate(id, newValue) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (el.textContent !== newValue) {
-        el.textContent = newValue;
-        el.classList.add("updated");
-        setTimeout(() => el.classList.remove("updated"), 400);
-      }
-    }
-
-    async function updateOverlay() {
-      try {
-        const battles = await fetchCell("A1");
-        const wins = await fetchCell("B1");
-        const frags = await fetchCell("C1");
-        const avgSaxon = await fetchCell("F1");
-        const avgAtaman = await fetchCell("G1");
-        const fragsAtaman = await fetchCell("I1");
-        const fragsSaxon = await fetchCell("J1");
-
-        animateUpdate("battles", battles);
-        animateUpdate("wins", wins);
-        animateUpdate("frags", frags);
-        animateUpdate("avgSaxon", avgSaxon);
-        animateUpdate("avgAtaman", avgAtaman);
-        animateUpdate("fragsAtaman", `${fragsAtaman} фраги`);
-        animateUpdate("fragsSaxon", `${fragsSaxon} фраги`);
-
-        const winPercent = battles > 0 ? ((wins / battles) * 100).toFixed(1) : 0;
-        document.getElementById("winPercent").innerHTML = `<span style="color: white">WIN %:</span> <span style="color: lime">${winPercent}%</span>`;
-      } catch (e) {
-        console.error("Помилка при отриманні даних з таблиці:", e);
-      }
-    }
-
-    updateOverlay();
-    setInterval(updateOverlay, 10000);
+    loadData();
+    setInterval(loadData, 20000); // оновлення кожні 20 секунд
   </script>
 </body>
 </html>
