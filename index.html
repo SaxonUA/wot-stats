@@ -25,7 +25,7 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
     .title {
-      font-size: 20px; /* збільшив */
+      font-size: 20px;
       margin-top: 10px;
     }
     .score {
@@ -44,15 +44,15 @@
       margin: 2px 0;
       gap: 10px;
     }
-   .map-name {
-  text-align: right;
-  width: 180px; /* більше простору */
-  word-break: break-word;
-}
-.map-score {
-  text-align: right; /* цифри праворуч */
-  min-width: 30px;
-}
+    .map-name {
+      text-align: right;
+      width: 180px; /* ширина назв карт */
+      word-break: break-word;
+    }
+    .map-score {
+      text-align: right; /* цифри праворуч */
+      min-width: 30px;
+    }
     .positive { color: #00ff00; }
     .negative { color: #ff6666; }
     .progress-container {
@@ -62,9 +62,9 @@
     }
     .rank-progress {
       position: relative;
-      height: 4px;
+      height: 6px; /* товстіша лінія */
       background: #555;
-      border-radius: 2px;
+      border-radius: 3px;
       overflow: hidden;
     }
     .progress-fill {
@@ -85,23 +85,23 @@
       height: 8px;
     }
     .ticks-top { top: -8px; }
-    .ticks-bottom { top: 4px; }
+    .ticks-bottom { top: 6px; } /* підняв під товщу лінію */
     .tick {
       position: absolute;
       width: 1px;
       background: white;
-      height: 8px;
+      height: 4px; /* маленька розмітка */
     }
     .labels {
       display: flex;
       justify-content: space-between;
-      font-size: 18px;
+      font-size: 18px; /* збільшив літери дивізіону */
       margin-top: 10px;
       color: #aaa;
     }
     .labels span.active {
       color: #ff9900;
-      text-shadow: 0 0 10px #ff9900;
+      text-shadow: 0 0 5px #ff9900;
       font-weight: bold;
     }
   </style>
@@ -142,8 +142,8 @@
         .then(data => {
           const rows = data.table.rows;
 
-          const rank = rows[0].c[0].v;      // A1 (очки)
-          const rankTitle = rows[0].c[6].v; // G1 (назва рангу)
+          const rank = rows[0].c[0].v;
+          const rankTitle = rows[0].c[6].v;
 
           document.getElementById('rank-title').innerText = rankTitle;
           document.getElementById('rank-score').innerText = rank;
@@ -165,10 +165,10 @@
           }
 
           const mapHTML = rows.slice(2, 7).filter(row => row.c[6] && row.c[6].v).map(row => {
-            const mapName = row.c[6].v;  // G3-G7
-            const score = row.c[7] ? row.c[7].v : 0; // H3-H7
+            const mapName = row.c[6].v;
+            const score = row.c[7] ? row.c[7].v : 0;
             const scoreClass = score >= 0 ? 'positive' : 'negative';
-            const displayScore = Math.abs(score); // прибираємо мінус
+            const displayScore = Math.abs(score);
             return `<div class="map-item"><span class="map-name">${mapName}</span><span class="map-score ${scoreClass}">${displayScore}</span></div>`;
           }).join('');
           document.getElementById('map-list').innerHTML = mapHTML;
