@@ -24,13 +24,6 @@
       margin-top: 40px;
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
-    .letter-e {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 24px;
-      font-weight: bold;
-    }
     .title {
       font-size: 18px;
       margin-top: 10px;
@@ -41,14 +34,23 @@
       margin: 10px 0 20px 0;
     }
     .map-list {
-      text-align: left;
       margin-top: 20px;
-      font-size: 16px; /* збільшено */
+      font-size: 16px;
     }
     .map-item {
       display: flex;
-      justify-content: space-between;
-      margin: 1px 0; /* зменшено */
+      justify-content: center;
+      align-items: center;
+      margin: 2px 0;
+      gap: 10px;
+    }
+    .map-name {
+      text-align: right;
+      min-width: 100px;
+    }
+    .map-score {
+      text-align: left;
+      min-width: 30px;
     }
     .positive { color: #00ff00; }
     .negative { color: #ff6666; }
@@ -106,7 +108,6 @@
 <body>
 
   <div class="card">
-    <div class="letter-e" id="rank-letter">E</div>
     <div class="title" id="rank-title">...</div>
     <div class="score" id="rank-score">...</div>
 
@@ -154,7 +155,6 @@
 
             const divisionSize = rankRange / divisions.length;
             const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
-            document.getElementById('rank-letter').innerText = divisions[divisionIndex];
 
             const ticksHTML = divisions.map((div, i) => `<div class="tick" style="left:${(i / (divisions.length - 1)) * 100}%"></div>`).join('');
             document.getElementById('ticks-top').innerHTML = ticksHTML;
@@ -167,7 +167,8 @@
             const mapName = row.c[6].v;  // G3-G7
             const score = row.c[7] ? row.c[7].v : 0; // H3-H7
             const scoreClass = score >= 0 ? 'positive' : 'negative';
-            return `<div class="map-item"><span>${mapName}</span><span class="${scoreClass}">${score}</span></div>`;
+            const displayScore = Math.abs(score); // прибираємо мінус
+            return `<div class="map-item"><span class="map-name">${mapName}</span><span class="map-score ${scoreClass}">${displayScore}</span></div>`;
           }).join('');
           document.getElementById('map-list').innerHTML = mapHTML;
         });
