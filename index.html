@@ -124,7 +124,6 @@
   </div>
 
   <script>
-    const total = 3000;
     const ranks = [
       { name: 'Залізо', from: 0, to: 499 },
       { name: 'Бронза', from: 500, to: 999 },
@@ -135,28 +134,14 @@
     const divisions = ['E', 'D', 'C', 'B', 'A'];
 
     function loadData() {
-      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoiDu4o7q11-jcFeek7kfCQjFDBvLQL-ipMv_OFcxRXSxQC5xiDVR_PCzhDmBmxrNVdSLvCG_2lXJ/pub?gid=1485670007&single=true&output=csv&ts=' + new Date().getTime())
-        .then(response => response.text())
-        .then(csv => {
-          const rows = csv.split('\n').map(row => row.split(','));
+      fetch('https://script.google.com/macros/s/AKfycbxOCek5L4smlpdXtASCsPFUcz2Q7Umh8ySfuCSKMcETfNzMaiqq6uZHnFPQetDxeh57CA/exec?ts=' + new Date().getTime())
+        .then(response => response.json())
+        .then(data => {
+          const rankTitle = data[0][0]; 
+          const rank = parseInt(data[1][0]); 
 
-          const rankLetter = rows[2][7]; // H3
-          document.getElementById('rank-letter').innerText = rankLetter;
-
-          const rankTitle = rows[2][6]; // G3
           document.getElementById('rank-title').innerText = rankTitle;
-
-          const rank = parseInt(rows[3][6]); // G4
           document.getElementById('rank-score').innerText = rank;
-
-          const mapList = document.getElementById('map-list');
-          mapList.innerHTML = '';
-          for (let i = 4; i <= 8; i++) {
-            const mapName = rows[i][6];
-            const mapScore = rows[i][7];
-            const scoreClass = mapScore >= 0 ? 'positive' : 'negative';
-            mapList.innerHTML += `<div class="map-item"><span>${mapName}</span><span class="${scoreClass}">${mapScore}</span></div>`;
-          }
 
           const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
           const fill = document.getElementById('progress-fill');
@@ -164,6 +149,13 @@
           const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
           fill.style.width = `${percentInRank}%`;
 
+          // Обчислення літери рангу (E-A)
+          const divisionSize = rankRange / divisions.length;
+          const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
+          const rankLetter = divisions[divisionIndex];
+          document.getElementById('rank-letter').innerText = rankLetter;
+
+          // Поділки та підсвітка
           const ticksTop = document.getElementById('ticks-top');
           const ticksBottom = document.getElementById('ticks-bottom');
           ticksTop.innerHTML = '';
@@ -183,21 +175,25 @@
           divisions.forEach((div, i) => {
             const span = document.createElement('span');
             span.innerText = div;
-
-            // Визначаємо активну літеру
-            const divisionSize = rankRange / divisions.length;
-            const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
             if (i === divisionIndex) {
               span.classList.add('active');
             }
-
             labels.appendChild(span);
           });
+
+          const mapList = document.getElementById('map-list');
+          mapList.innerHTML = '';
+          for (let i = 2; i < data.length; i++) {
+            const mapName = data[i][0];
+            const mapScore = data[i][1];
+            const scoreClass = mapScore >= 0 ? 'positive' : 'negative';
+            mapList.innerHTML += `<div class="map-item"><span>${mapName}</span><span class="${scoreClass}">${mapScore}</span></div>`;
+          }
         });
     }
 
     loadData();
-    setInterval(loadData, 10000);
+    setInterval(loadData, 20000);
   </script>
 </body>
 </html>
