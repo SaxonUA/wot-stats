@@ -16,7 +16,7 @@
     }
     .card {
       background: rgba(0, 0, 0, 0.6);
-      width: 200px;
+      width: 300px;
       padding: 20px;
       border-radius: 15px;
       text-align: center;
@@ -33,16 +33,16 @@
     }
     .title {
       font-size: 18px;
-      margin-top: 30px;
+      margin-top: 10px;
     }
     .score {
       font-size: 28px;
       font-weight: bold;
-      margin: 10px 0;
+      margin: 10px 0 20px 0;
     }
     .map-list {
       text-align: left;
-      margin-top: 10px;
+      margin-top: 20px;
       font-size: 14px;
     }
     .map-item {
@@ -54,10 +54,9 @@
     .negative { color: #ff6666; }
 
     .progress-container {
-      width: 300px;
-      margin-top: 40px;
-      text-align: center;
+      margin: 10px auto 0 auto;
       position: relative;
+      width: 80%;
     }
     .rank-progress {
       position: relative;
@@ -80,24 +79,28 @@
     }
     .ticks {
       position: absolute;
-      top: -8px;
       width: 100%;
-      height: 20px;
+      height: 8px;
     }
+    .ticks-top { top: -8px; }
+    .ticks-bottom { top: 4px; }
     .tick {
       position: absolute;
       width: 1px;
       background: white;
       height: 8px;
     }
-    .ticks-bottom .tick {
-      top: 12px;
-    }
     .labels {
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 16px;
       margin-top: 10px;
+      color: #aaa;
+    }
+    .labels span.active {
+      color: #ff9900;
+      text-shadow: 0 0 5px #ff9900;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -107,16 +110,17 @@
     <div class="letter-e" id="rank-letter">E</div>
     <div class="title" id="rank-title">...</div>
     <div class="score" id="rank-score">...</div>
-    <div class="map-list" id="map-list"></div>
-  </div>
 
-  <div class="progress-container">
-    <div class="rank-progress" id="rank-progress">
-      <div class="progress-fill" id="progress-fill"></div>
-      <div class="ticks ticks-top" id="ticks-top"></div>
-      <div class="ticks ticks-bottom" id="ticks-bottom"></div>
+    <div class="progress-container">
+      <div class="rank-progress" id="rank-progress">
+        <div class="progress-fill" id="progress-fill"></div>
+        <div class="ticks ticks-top" id="ticks-top"></div>
+        <div class="ticks ticks-bottom" id="ticks-bottom"></div>
+      </div>
+      <div class="labels" id="labels"></div>
     </div>
-    <div class="labels" id="labels"></div>
+
+    <div class="map-list" id="map-list"></div>
   </div>
 
   <script>
@@ -131,7 +135,7 @@
     const divisions = ['E', 'D', 'C', 'B', 'A'];
 
     function loadData() {
-      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoiDu4o7q11-jcFeek7kfCQjFDBvLQL-ipMv_OFcxRXSxQC5xiDVR_PCzhDmBmxrNVdSLvCG_2lXJ/pub?gid=1485670007&single=true&output=csv')
+      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoiDu4o7q11-jcFeek7kfCQjFDBvLQL-ipMv_OFcxRXSxQC5xiDVR_PCzhDmBmxrNVdSLvCG_2lXJ/pub?gid=1485670007&single=true&output=csv&ts=' + new Date().getTime())
         .then(response => response.text())
         .then(csv => {
           const rows = csv.split('\n').map(row => row.split(','));
@@ -155,7 +159,6 @@
           }
 
           const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
-
           const fill = document.getElementById('progress-fill');
           const rankRange = currentRank.to - currentRank.from + 1;
           const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
@@ -176,12 +179,25 @@
           });
 
           const labels = document.getElementById('labels');
-          labels.innerHTML = divisions.map(div => `<span>${div}</span>`).join('');
+          labels.innerHTML = '';
+          divisions.forEach((div, i) => {
+            const span = document.createElement('span');
+            span.innerText = div;
+
+            // Визначаємо активну літеру
+            const divisionSize = rankRange / divisions.length;
+            const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
+            if (i === divisionIndex) {
+              span.classList.add('active');
+            }
+
+            labels.appendChild(span);
+          });
         });
     }
 
     loadData();
-    setInterval(loadData, 10000); // оновлення кожні 20 секунд
+    setInterval(loadData, 20000);
   </script>
 </body>
 </html>
