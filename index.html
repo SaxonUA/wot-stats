@@ -133,36 +133,43 @@
     const divisions = ['E', 'D', 'C', 'B', 'A'];
 
     function loadData() {
-      fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRAoiDu4o7q11-jcFeek7kfCQjFDBvLQL-ipMv_OFcxRXSxQC5xiDVR_PCzhDmBmxrNVdSLvCG_2lXJ/pub?gid=1485670007&single=true&output=csv&ts=' + new Date().getTime())
+      const url = 'https://docs.google.com/spreadsheets/d/1weu6uic-ra_0NwrnJsxhF47SErfyt8WGSeoPHaQyPTg/gviz/tq?tqx=out:json&gid=1485670007&t=' + new Date().getTime();
+      fetch(url)
         .then(response => response.text())
-        .then(csv => {
-          const rows = csv.trim().split('\n').map(row => row.split(','));
-          const rankTitle = rows[2][6];
-          const rank = parseInt(rows[3][6]);
+        .then(text => JSON.parse(text.substr(47).slice(0, -2)))
+        .then(data => {
+          const rows = data.table.rows;
+
+          const rank = rows[0].c[0].v;      // A1 (очки)
+          const rankTitle = rows[0].c[6].v; // G1 (назва рангу)
 
           document.getElementById('rank-title').innerText = rankTitle;
           document.getElementById('rank-score').innerText = rank;
 
           const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
-          const rankRange = currentRank.to - currentRank.from + 1;
-          const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
-          document.getElementById('progress-fill').style.width = `${percentInRank}%`;
+          if (currentRank) {
+            const rankRange = currentRank.to - currentRank.from + 1;
+            const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
+            document.getElementById('progress-fill').style.width = `${percentInRank}%`;
 
-          const divisionSize = rankRange / divisions.length;
-          const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
-          document.getElementById('rank-letter').innerText = divisions[divisionIndex];
+            const divisionSize = rankRange / divisions.length;
+            const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
+            document.getElementById('rank-letter').innerText = divisions[divisionIndex];
 
-          const ticksHTML = divisions.map((div, i) => `<div class="tick" style="left:${(i / (divisions.length - 1)) * 100}%"></div>`).join('');
-          document.getElementById('ticks-top').innerHTML = ticksHTML;
-          document.getElementById('ticks-bottom').innerHTML = ticksHTML;
+            const ticksHTML = divisions.map((div, i) => `<div class="tick" style="left:${(i / (divisions.length - 1)) * 100}%"></div>`).join('');
+            document.getElementById('ticks-top').innerHTML = ticksHTML;
+            document.getElementById('ticks-bottom').innerHTML = ticksHTML;
 
-          document.getElementById('labels').innerHTML = divisions.map((div, i) => `<span class="${i === divisionIndex ? 'active' : ''}">${div}</span>`).join('');
+            document.getElementById('labels').innerHTML = divisions.map((div, i) => `<span class="${i === divisionIndex ? 'active' : ''}">${div}</span>`).join('');
+          }
 
-          document.getElementById('map-list').innerHTML = rows.slice(4, 9).map(row => {
-            const score = parseInt(row[7]);
+          const mapHTML = rows.slice(2, 7).filter(row => row.c[6] && row.c[6].v).map(row => {
+            const mapName = row.c[6].v;  // G3-G7
+            const score = row.c[7] ? row.c[7].v : 0; // H3-H7
             const scoreClass = score >= 0 ? 'positive' : 'negative';
-            return `<div class="map-item"><span>${row[6]}</span><span class="${scoreClass}">${score}</span></div>`;
+            return `<div class="map-item"><span>${mapName}</span><span class="${scoreClass}">${score}</span></div>`;
           }).join('');
+          document.getElementById('map-list').innerHTML = mapHTML;
         });
     }
 
