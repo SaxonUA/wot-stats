@@ -144,18 +144,15 @@
           document.getElementById('rank-score').innerText = rank;
 
           const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
-          const fill = document.getElementById('progress-fill');
           const rankRange = currentRank.to - currentRank.from + 1;
           const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
-          fill.style.width = `${percentInRank}%`;
+          document.getElementById('progress-fill').style.width = `${percentInRank}%`;
 
-          // Обчислення літери рангу (E-A)
           const divisionSize = rankRange / divisions.length;
           const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
           const rankLetter = divisions[divisionIndex];
           document.getElementById('rank-letter').innerText = rankLetter;
 
-          // Поділки та підсвітка
           const ticksTop = document.getElementById('ticks-top');
           const ticksBottom = document.getElementById('ticks-bottom');
           ticksTop.innerHTML = '';
