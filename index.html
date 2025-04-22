@@ -15,8 +15,8 @@
       font-family: 'Montserrat', sans-serif;
     }
     .card {
-      background: rgba(0, 0, 0, 0.5);
-      width: 260px; /* зменшив ширину */
+      background: rgba(0, 0, 0, 0.6);
+      width: 260px;
       padding: 20px;
       border-radius: 15px;
       text-align: center;
@@ -25,17 +25,17 @@
       box-shadow: 0 0 15px rgba(0,0,0,0.7);
     }
     .title {
-      font-size: 20px; /* трохи менше */
+      font-size: 20px; /* збільшив */
       margin-top: 10px;
     }
     .score {
-      font-size: 24px; /* трохи менше */
+      font-size: 24px;
       font-weight: bold;
       margin: 10px 0 20px 0;
     }
     .map-list {
       margin-top: 20px;
-      font-size: 18px; /* збільшив */
+      font-size: 18px;
     }
     .map-item {
       display: flex;
@@ -44,14 +44,15 @@
       margin: 2px 0;
       gap: 10px;
     }
-    .map-name {
-      text-align: right;
-      min-width: 100px;
-    }
-    .map-score {
-      text-align: left;
-      min-width: 30px;
-    }
+   .map-name {
+  text-align: right;
+  width: 180px; /* більше простору */
+  word-break: break-word;
+}
+.map-score {
+  text-align: right; /* цифри праворуч */
+  min-width: 30px;
+}
     .positive { color: #00ff00; }
     .negative { color: #ff6666; }
     .progress-container {
@@ -94,7 +95,7 @@
     .labels {
       display: flex;
       justify-content: space-between;
-      font-size: 14px; /* трохи менше */
+      font-size: 14px;
       margin-top: 10px;
       color: #aaa;
     }
