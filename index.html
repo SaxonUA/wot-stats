@@ -1,184 +1,105 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ранг</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: #222;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-family: 'Montserrat', sans-serif;
-    }
-    .card {
-      background: rgba(0, 0, 0, 0.85);
-      width: 260px;
-      padding: 20px;
-      border-radius: 15px;
-      text-align: center;
-      position: relative;
-      margin-top: 40px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
-    }
-    .title {
-      font-size: 20px;
-      margin-top: 10px;
-    }
-    .score {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px 0 20px 0;
-    }
-    .map-list {
-      margin-top: 20px;
-      font-size: 18px;
-    }
-    .map-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 2px 0;
-      gap: 10px;
-    }
-  .map-name {
-  text-align: right;
-  width: 180px;
-  word-break: break-word;
-  color: #fff; /* білий колір */
-}
-    .map-score {
-      text-align: right;
-      min-width: 30px;
-    }
-    .positive { color: #00ff00; }
-    .negative { color: #ff6666; }
-    .progress-container {
-      margin: 10px auto 0 auto;
-      position: relative;
-      width: 80%;
-    }
-    .rank-progress {
-      position: relative;
-      height: 6px;
-      background: #555;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: linear-gradient(90deg, #ff9900, #ffcc00);
-      animation: pulse 1.5s infinite alternate;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
-    .ticks {
-      position: absolute;
-      width: 100%;
-      height: 8px;
-    }
-    .ticks-top { top: -8px; }
-    .ticks-bottom { top: 6px; }
-    .tick {
-      position: absolute;
-      width: 1px;
-      background: white;
-      height: 4px;
-    }
-    .labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 18px;
-      margin-top: 10px;
-      color: #aaa;
-    }
-    .labels span.active {
-      color: #ff9900;
-      text-shadow: 0 0 5px #ff9900;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .overlay {
+            background: linear-gradient(to right, orange, #333);
+            padding: 10px 20px;
+            border-radius: 10px;
+            color: white;
+            display: inline-block;
+            text-align: center;
+        }
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .counter {
+            background: #111;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 40px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #ff8800;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow:
+                0 0 5px #ff8800,
+                0 0 10px #ff8800,
+                0 0 20px #ff5500,
+                0 0 40px #ff5500,
+                0 0 60px #ff2200;
+            transition: opacity 0.5s ease;
+        }
+        .fade {
+            opacity: 0.2;
+        }
+        .label, .bonus {
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+        }
+        .label {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .bonus {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #ffcc66;
+            text-shadow:
+                0 0 3px #ffcc66,
+                0 0 6px #ffaa33;
+        }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <div class="title" id="rank-title">...</div>
-    <div class="score" id="rank-score">...</div>
-
-    <div class="progress-container">
-      <div class="rank-progress">
-        <div class="progress-fill" id="progress-fill"></div>
-        <div class="ticks ticks-top" id="ticks-top"></div>
-        <div class="ticks ticks-bottom" id="ticks-bottom"></div>
-      </div>
-      <div class="labels" id="labels"></div>
+    <div class="overlay">
+        <div class="title">ЗАЛИШИЛОСЬ ВИКОНАТИ:</div>
+        <div class="counter" id="value">000 000</div>
+        <div class="label">Дамаг + Асист + Натанковано</div>
+        <div class="bonus">За кожну 1грн + 100 суми</div>
     </div>
 
-    <div class="map-list" id="map-list"></div>
-  </div>
+    <script>
+        const sheetId = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+        const sheetName = "ASIST";
+        const cell = "E2";
+        let lastValue = null;
 
-  <script>
-    const ranks = [
-      { name: 'Залізо', from: 0, to: 499 },
-      { name: 'Бронза', from: 500, to: 999 },
-      { name: 'Срібло', from: 1000, to: 1499 },
-      { name: 'Золото', from: 1500, to: 1999 },
-      { name: 'Чемпіон', from: 2000, to: 2999 }
-    ];
-    const divisions = ['E', 'D', 'C', 'B', 'A'];
+        async function fetchData() {
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&range=${cell}`;
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                const value = json.table.rows[0].c[0].v;
+                updateCounter(value);
+            } catch (e) {
+                console.error("Помилка отримання даних:", e);
+            }
+        }
 
-    function loadData() {
-      const url = 'https://docs.google.com/spreadsheets/d/1weu6uic-ra_0NwrnJsxhF47SErfyt8WGSeoPHaQyPTg/gviz/tq?tqx=out:json&gid=1485670007&t=' + new Date().getTime();
-      fetch(url)
-        .then(response => response.text())
-        .then(text => JSON.parse(text.substr(47).slice(0, -2)))
-        .then(data => {
-          const rows = data.table.rows;
+        function updateCounter(newValue) {
+            const counter = document.getElementById('value');
+            if (newValue !== lastValue) {
+                counter.classList.add('fade');
+                setTimeout(() => {
+                    counter.innerText = newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+                    counter.classList.remove('fade');
+                }, 300);
+                lastValue = newValue;
+            }
+        }
 
-          const rank = rows[0].c[0].v;
-          const rankTitle = rows[0].c[6].v;
-
-          document.getElementById('rank-title').innerText = rankTitle;
-          document.getElementById('rank-score').innerText = rank;
-
-          const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
-          if (currentRank) {
-            const rankRange = currentRank.to - currentRank.from + 1;
-            const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
-            document.getElementById('progress-fill').style.width = `${percentInRank}%`;
-
-            const divisionSize = rankRange / divisions.length;
-            const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
-
-            const ticksHTML = divisions.map((div, i) => `<div class="tick" style="left:${(i / (divisions.length - 1)) * 100}%"></div>`).join('');
-            document.getElementById('ticks-top').innerHTML = ticksHTML;
-            document.getElementById('ticks-bottom').innerHTML = ticksHTML;
-
-            document.getElementById('labels').innerHTML = divisions.map((div, i) => `<span class="${i === divisionIndex ? 'active' : ''}">${div}</span>`).join('');
-          }
-
-          const mapHTML = rows.slice(2, 7)
-            .filter(row => row.c[6] && row.c[6].v && row.c[7] != null)
-            .map(row => {
-              const mapName = row.c[6].v;
-              const score = row.c[7].v;
-              const scoreClass = score >= 0 ? 'positive' : 'negative';
-              const displayScore = Math.abs(score);
-              return `<div class="map-item"><span class="map-name">${mapName}</span><span class="map-score ${scoreClass}">${displayScore}</span></div>`;
-            }).join('');
-          document.getElementById('map-list').innerHTML = mapHTML;
-        });
-    }
-
-    loadData();
-    setInterval(loadData, 10000);
-  </script>
+        fetchData();
+        setInterval(fetchData, 15000);
+    </script>
 </body>
 </html>
