@@ -1,106 +1,126 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: transparent;
-            font-family: Arial, sans-serif;
-        }
-        .overlay {
-            background: linear-gradient(to right, rgba(255, 165, 0, 0.3), rgba(51, 51, 51, 0.3));
-            padding: 10px 20px;
-            border-radius: 10px;
-            color: white;
-            text-align: center;
-        }
-        .title {
-            font-size: 25px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .counter {
-            background: #111;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 40px;
-            font-weight: bold;
-            letter-spacing: 8px;
-            color: #ff8800;
-            font-family: 'Orbitron', sans-serif;
-            text-shadow:
-                0 0 4px #ff8800,
-                0 0 8px #ff5500;
-            transition: opacity 0.5s ease;
-        }
-        .fade {
-            opacity: 0.2;
-        }
-        .label, .bonus {
-            font-family: 'Rajdhani', sans-serif;
-            letter-spacing: 1px;
-        }
-        .label {
-            margin-top: 5px;
-            font-size: 20px;
-        }
-        .bonus {
-            margin-top: 5px;
-            font-size: 20px;
-            color: #ffcc66;
-            text-shadow:
-                0 0 2px #ffcc66,
-                0 0 4px #ffaa33;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Середня шкода LF</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: transparent;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .widget {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px 30px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 0 10px #000;
+      color: white;
+    }
+    .title {
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .average {
+      font-size: 50px;
+      color: cyan;
+      font-weight: bold;
+      text-align: center;
+      border-top: 2px solid orange;
+      border-bottom: 2px solid orange;
+      padding: 8px 0;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      margin-top: 6px;
+    }
+    .map {
+      color: white;
+    }
+    .damage.red {
+      color: red;
+      font-weight: bold;
+    }
+    .damage.yellow {
+      color: yellow;
+      font-weight: bold;
+    }
+    .damage.green {
+      color: lime;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <div class="overlay">
-        <div class="title">ЗАЛИШИЛОСЬ ВИКОНАТИ:</div>
-        <div class="counter" id="value">000 000</div>
-        <div class="label">Дамаг + Асист + Натанковано</div>
-        <div class="bonus">За кожну 1грн + 100 суми</div>
-    </div>
+  <div class="widget">
+    <div class="title">Середня шкода</div>
+    <div id="avg" class="average">Завантаження...</div>
+    <div id="rows"></div>
+  </div>
 
-    <script>
-        const sheetId = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-        const sheetName = "ASIST";
-        const cell = "E2";
-        let lastValue = null;
+  <script>
+    const sheetID = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
+    const avgRange = 'LF!K2';
+    const listRange = 'LF!H1:I100';
 
-        async function fetchData() {
-            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&range=${cell}`;
-            try {
-                const res = await fetch(url);
-                const text = await res.text();
-                const json = JSON.parse(text.substr(47).slice(0, -2));
-                const value = json.table.rows[0].c[0].v;
-                updateCounter(value);
-            } catch (e) {
-                console.error("Помилка отримання даних:", e);
-            }
+    async function fetchSheet(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&range=${range}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      return JSON.parse(text.substr(47).slice(0, -2));
+    }
+
+    function formatNumber(n) {
+      return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    function getDamageClass(value) {
+      if (value < 8000) return 'red';
+      if (value <= 12000) return 'yellow';
+      return 'green';
+    }
+
+    async function updateData() {
+      const avgData = await fetchSheet(avgRange);
+      const avgValue = formatNumber(avgData.table.rows[0].c[0].v);
+      document.getElementById("avg").textContent = avgValue;
+
+      const rowsData = await fetchSheet(listRange);
+      const validRows = [];
+
+      for (const r of rowsData.table.rows) {
+        if (r.c[0]?.v != null && r.c[1]?.v != null) {
+          validRows.push([r.c[0].v, r.c[1].v]);
+          if (validRows.length === 3) break;
         }
+      }
 
-        function updateCounter(newValue) {
-            const counter = document.getElementById('value');
-            if (newValue !== lastValue) {
-                counter.classList.add('fade');
-                setTimeout(() => {
-                    counter.innerText = newValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-                    counter.classList.remove('fade');
-                }, 300);
-                lastValue = newValue;
-            }
-        }
+      const container = document.getElementById("rows");
+      container.innerHTML = "";
+      validRows.forEach(([map, dmg]) => {
+        const damageValue = Math.round(dmg);
+        const colorClass = getDamageClass(damageValue);
+        container.innerHTML += `
+          <div class="row">
+            <div class="map">${map}</div>
+            <div class="damage ${colorClass}">${formatNumber(damageValue)}</div>
+          </div>`;
+      });
+    }
 
-        fetchData();
-        setInterval(fetchData, 15000);
-    </script>
+    updateData();
+    setInterval(updateData, 15000);
+  </script>
 </body>
 </html>
