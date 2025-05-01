@@ -19,12 +19,12 @@
       background: rgba(0, 0, 0, 0.7);
       padding: 16px 24px;
       border-radius: 10px;
-      width: 260px;
+      width: 210px;
       box-shadow: 0 0 10px #000;
       color: white;
     }
     .title {
-      font-size: 30px;
+      font-size: 28px;
       text-align: center;
       margin-bottom: 8px;
     }
@@ -40,29 +40,32 @@
       letter-spacing: 1.5px;
     }
     .row {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 140px auto;
       font-size: 16px;
       margin-top: 6px;
+      width: 100%;
     }
     .map {
       color: white;
+      text-align: right;
+     padding-right: 10px;
+    }
+    .damage {
+      font-family: monospace;
+      font-weight: bold;
     }
     .damage.red {
       color: red;
-      font-weight: bold;
     }
     .damage.yellow {
       color: yellow;
-      font-weight: bold;
     }
     .damage.green {
       color: lime;
-      font-weight: bold;
     }
     .damage.purple {
       color: violet;
-      font-weight: bold;
     }
     .separator {
       border-top: 2px solid orange;
@@ -80,7 +83,7 @@
     <div class="title">Середня шкода</div>
     <div id="avg" class="average">Завантаження...</div>
     <div id="rows"></div>
-    <div class="separator"></div> <!-- 🔶 помаранчева лінія -->
+    <div class="separator"></div>
     <div id="battles" class="battles"></div>
   </div>
 
@@ -130,13 +133,15 @@
       const container = document.getElementById("rows");
       container.innerHTML = "";
       validRows.forEach(([map, dmg]) => {
-        const damageValue = Math.round(dmg);
-        const colorClass = getDamageClass(damageValue);
-        container.innerHTML += `
-          <div class="row">
-            <div class="map">${map}</div>
-            <div class="damage ${colorClass}">${formatNumber(damageValue)}</div>
-          </div>`;
+        if (map && dmg != null) {
+          const damageValue = Math.round(dmg);
+          const colorClass = getDamageClass(damageValue);
+          container.innerHTML += `
+            <div class="row">
+              <div class="map">${map}</div>
+              <div class="damage ${colorClass}">${formatNumber(damageValue)}</div>
+            </div>`;
+        }
       });
     }
 
