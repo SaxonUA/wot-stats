@@ -17,32 +17,32 @@
     }
     .widget {
       background: rgba(0, 0, 0, 0.7);
-      padding: 20px 30px;
+      padding: 16px 24px;
       border-radius: 10px;
-      width: 320px;
+      width: 240px; /* зменшена ширина */
       box-shadow: 0 0 10px #000;
       color: white;
     }
     .title {
       font-size: 30px;
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .average {
-      font-size: 50px;
+      font-size: 40px;
       color: cyan;
       font-weight: bold;
       text-align: center;
       border-top: 2px solid orange;
       border-bottom: 2px solid orange;
-      padding: 8px 0;
+      padding: 6px 0;
       margin-bottom: 10px;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
     }
     .row {
       display: flex;
       justify-content: space-between;
-      font-size: 18px;
+      font-size: 16px;
       margin-top: 6px;
     }
     .map {
@@ -58,6 +58,10 @@
     }
     .damage.green {
       color: lime;
+      font-weight: bold;
+    }
+    .damage.purple {
+      color: violet;
       font-weight: bold;
     }
   </style>
@@ -86,9 +90,10 @@
     }
 
     function getDamageClass(value) {
-      if (value < 8000) return 'red';
-      if (value <= 12000) return 'yellow';
-      return 'green';
+      if (value > 15000) return 'purple';
+      if (value > 12000) return 'green';
+      if (value >= 8000) return 'yellow';
+      return 'red';
     }
 
     async function updateData() {
