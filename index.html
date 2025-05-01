@@ -19,7 +19,7 @@
       background: rgba(0, 0, 0, 0.7);
       padding: 16px 24px;
       border-radius: 10px;
-      width: 240px; /* зменшена ширина */
+      width: 260px;
       box-shadow: 0 0 10px #000;
       color: white;
     }
@@ -29,7 +29,7 @@
       margin-bottom: 8px;
     }
     .average {
-      font-size: 40px;
+      font-size: 35px;
       color: cyan;
       font-weight: bold;
       text-align: center;
@@ -64,6 +64,15 @@
       color: violet;
       font-weight: bold;
     }
+    .separator {
+      border-top: 2px solid orange;
+      margin: 10px 0 4px;
+    }
+    .battles {
+      text-align: center;
+      font-size: 15px;
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
@@ -71,11 +80,14 @@
     <div class="title">Середня шкода</div>
     <div id="avg" class="average">Завантаження...</div>
     <div id="rows"></div>
+    <div class="separator"></div> <!-- 🔶 помаранчева лінія -->
+    <div id="battles" class="battles"></div>
   </div>
 
   <script>
     const sheetID = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
     const avgRange = 'LF!K2';
+    const countRange = 'LF!K1';
     const listRange = 'LF!H1:I100';
 
     async function fetchSheet(range) {
@@ -100,6 +112,10 @@
       const avgData = await fetchSheet(avgRange);
       const avgValue = formatNumber(avgData.table.rows[0].c[0].v);
       document.getElementById("avg").textContent = avgValue;
+
+      const countData = await fetchSheet(countRange);
+      const countValue = countData.table.rows[0].c[0].v;
+      document.getElementById("battles").textContent = `К-ть боїв: ${countValue}`;
 
       const rowsData = await fetchSheet(listRange);
       const validRows = [];
