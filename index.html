@@ -25,6 +25,10 @@
       line-height: 1.1;
       margin-bottom: 3vh;
     }
+    .row.big {
+      gap: 8vw;
+      margin-bottom: 3vh;
+    }
     .row {
       display: flex;
       justify-content: center;
@@ -36,7 +40,7 @@
       font-size: 2vw;
     }
     .number {
-      font-size: 2.5vw;
+      font-size: 4vw; /* ← Збільшено розмір цифр */
       color: #ffe;
     }
     .highlight {
@@ -44,7 +48,7 @@
       margin: 3vh 0;
     }
     .highlight .number {
-      font-size: 4vw;
+      font-size: 5vw; /* ← Ще більше для золота */
       color: #fffacc;
     }
   </style>
@@ -57,7 +61,7 @@
       РАЯНА
     </div>
 
-    <div class="row">
+    <div class="row big">
       <div class="stat">
         <div>ВРЯТОВАНО</div>
         <div class="number" id="saved">-</div>
@@ -68,7 +72,6 @@
       </div>
     </div>
 
-    <!-- Виділений блок -->
     <div class="stat highlight">
       <div>К-ть золота до розіграшу</div>
       <div class="number" id="gold">-</div>
