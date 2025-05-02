@@ -2,151 +2,99 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Середня шкода LF</title>
+  <title>Врятувати Раяна</title>
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: transparent;
-      font-family: Arial, sans-serif;
-    }
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      margin: 0;
+      font-family: 'Arial Black', sans-serif;
+      background: url('https://cdn.jsdelivr.net/gh/SaxonUA/wot-stats/assets/ryan_bg_clean.png') no-repeat center center;
+      background-size: cover;
+      color: #f4f1dc;
+      text-shadow: 2px 2px 4px #000;
     }
-    .widget {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 16px 24px;
-      border-radius: 10px;
-      width: 210px;
-      box-shadow: 0 0 10px #000;
-      color: white;
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 5vh;
     }
     .title {
-      font-size: 28px;
+      font-size: 3vw;
+      text-transform: uppercase;
       text-align: center;
-      margin-bottom: 8px;
-    }
-    .average {
-      font-size: 35px;
-      color: cyan;
-      font-weight: bold;
-      text-align: center;
-      border-top: 2px solid orange;
-      border-bottom: 2px solid orange;
-      padding: 6px 0;
-      margin-bottom: 10px;
-      letter-spacing: 1.5px;
+      line-height: 1.1;
+      margin-bottom: 3vh;
     }
     .row {
-      display: grid;
-      grid-template-columns: 140px auto;
-      font-size: 16px;
-      margin-top: 6px;
-      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 5vw;
+      margin-bottom: 2vh;
     }
-    .map {
-      color: white;
-      text-align: right;
-     padding-right: 10px;
-    }
-    .damage {
-      font-family: monospace;
-      font-weight: bold;
-    }
-    .damage.red {
-      color: red;
-    }
-    .damage.yellow {
-      color: yellow;
-    }
-    .damage.green {
-      color: lime;
-    }
-    .damage.purple {
-      color: violet;
-    }
-    .separator {
-      border-top: 2px solid orange;
-      margin: 10px 0 4px;
-    }
-    .battles {
+    .stat {
       text-align: center;
-      font-size: 15px;
-      color: #ccc;
+      font-size: 1.5vw;
+    }
+    .number {
+      font-size: 2.5vw;
+      color: #ffe;
     }
   </style>
 </head>
 <body>
-  <div class="widget">
-    <div class="title">Середня шкода</div>
-    <div id="avg" class="average">Завантаження...</div>
-    <div id="rows"></div>
-    <div class="separator"></div>
-    <div id="battles" class="battles"></div>
+  <div class="wrapper">
+    <div class="title">
+      ВРЯТУВАТИ<br>
+      РЯДОВОГО<br>
+      РАЯНА
+    </div>
+
+    <div class="row">
+      <div class="stat">
+        <div>ВРЯТОВАНО</div>
+        <div class="number" id="saved">-</div>
+      </div>
+      <div class="stat">
+        <div>НЕ ВРЯТОВАНО</div>
+        <div class="number" id="notSaved">-</div>
+      </div>
+    </div>
+
+    <div class="stat" style="margin-bottom: 2vh;">
+      <div>К-ть золота до розіграшу</div>
+      <div class="number" id="gold">-</div>
+    </div>
+
+    <div class="stat">
+      <div>К-ть боїв</div>
+      <div class="number" id="battles">-</div>
+    </div>
   </div>
 
   <script>
-    const sheetID = '17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk';
-    const avgRange = 'LF!K2';
-    const countRange = 'LF!K1';
-    const listRange = 'LF!H1:I100';
+    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
+    const SHEET_NAME = "VRR";
+    const RANGE = "I2:L2";
 
-    async function fetchSheet(range) {
-      const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&range=${range}`;
-      const res = await fetch(url);
-      const text = await res.text();
-      return JSON.parse(text.substr(47).slice(0, -2));
-    }
+    async function fetchData() {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${RANGE}`;
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const row = json.table.rows[0].c.map(cell => cell ? cell.v : "-");
 
-    function formatNumber(n) {
-      return Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
-
-    function getDamageClass(value) {
-      if (value > 15000) return 'purple';
-      if (value > 12000) return 'green';
-      if (value >= 8000) return 'yellow';
-      return 'red';
-    }
-
-    async function updateData() {
-      const avgData = await fetchSheet(avgRange);
-      const avgValue = formatNumber(avgData.table.rows[0].c[0].v);
-      document.getElementById("avg").textContent = avgValue;
-
-      const countData = await fetchSheet(countRange);
-      const countValue = countData.table.rows[0].c[0].v;
-      document.getElementById("battles").textContent = `К-ть боїв: ${countValue}`;
-
-      const rowsData = await fetchSheet(listRange);
-      const validRows = [];
-
-      for (const r of rowsData.table.rows) {
-        if (r.c[0]?.v != null && r.c[1]?.v != null) {
-          validRows.push([r.c[0].v, r.c[1].v]);
-          if (validRows.length === 3) break;
-        }
+        document.getElementById("battles").textContent = row[0];
+        document.getElementById("gold").textContent = row[1];
+        document.getElementById("saved").textContent = row[2];
+        document.getElementById("notSaved").textContent = row[3];
+      } catch (e) {
+        console.error("Помилка завантаження даних:", e);
       }
-
-      const container = document.getElementById("rows");
-      container.innerHTML = "";
-      validRows.forEach(([map, dmg]) => {
-        if (map && dmg != null) {
-          const damageValue = Math.round(dmg);
-          const colorClass = getDamageClass(damageValue);
-          container.innerHTML += `
-            <div class="row">
-              <div class="map">${map}</div>
-              <div class="damage ${colorClass}">${formatNumber(damageValue)}</div>
-            </div>`;
-        }
-      });
     }
 
-    updateData();
-    setInterval(updateData, 15000);
+    fetchData();
+    setInterval(fetchData, 15000);
   </script>
 </body>
 </html>
