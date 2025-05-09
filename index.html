@@ -1,112 +1,212 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <title>Врятувати Раяна</title>
+  <meta charset="UTF-8" />
+  <title>Рембо Челендж</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      margin: 0;
+      background: url('РЕМБО САКСОН (1).png') no-repeat center/cover;
       font-family: 'Arial Black', sans-serif;
-      background: url('https://cdn.jsdelivr.net/gh/SaxonUA/wot-stats/assets/ryan_bg_clean.png') no-repeat center center;
-      background-size: cover;
-      color: #f4f1dc;
-      text-shadow: 2px 2px 4px #000;
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
-    .wrapper {
+
+    .overlay {
+      padding: 25px 50px;
+      margin: auto;
+      background: transparent;
+      border-radius: 30px;
+      width: fit-content;
+    }
+
+    .damage-block {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 5vh;
+      margin-top: 40px;
     }
-    .title {
-      font-size: 3vw;
+
+    .label {
+      font-size: 40px;
+      color: orange;
+      font-family: 'Orbitron', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
+      margin: 0;
+    }
+
+    .flip-damage .flip-clock-wrapper {
+      background: rgba(0, 0, 0, .5);
+      border: 2px solid orange;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 140, 0, .6);
+      display: inline-block;
+    }
+
+    .flip-damage.increase .flip-clock-wrapper {
+      animation: glow-green 1.5s ease;
+    }
+
+    .flip-damage.decrease .flip-clock-wrapper {
+      animation: glow-red 1.5s ease;
+    }
+
+    @keyframes glow-green {
+      0% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.9); border-color: lime; }
+      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
+    }
+
+    @keyframes glow-red {
+      0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); border-color: red; }
+      100% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); border-color: orange; }
+    }
+
+    .note {
+      font-size: 25px;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+
+    .note-gradient {
+      background: linear-gradient(270deg, orange, white);
+      background-size: 400% 50%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: grad 6s ease infinite;
+    }
+
+    @keyframes grad {
+      0% { background-position: 0 50% }
+      50% { background-position: 100% 50% }
+      100% { background-position: 0 50% }
+    }
+
+    .flip-clock-wrapper ul li a div div.inn {
+      font-size: 70px;
+    }
+
+    .countdown-wrapper {
+      margin-top: 60px;
+    }
+
+    .rembo-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 45px;
+      color: orange;
+      margin-bottom: 10px;
       text-transform: uppercase;
-      text-align: center;
-      line-height: 1.1;
-      margin-bottom: 3vh;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
     }
-    .row.big {
-      gap: 8vw;
-      margin-bottom: 3vh;
-    }
-    .row {
+
+    #damage-clock {
       display: flex;
       justify-content: center;
-      gap: 5vw;
-      margin-bottom: 2vh;
-    }
-    .stat {
-      text-align: center;
-      font-size: 2vw;
-    }
-    .number {
-      font-size: 7vw; /* ← Збільшено розмір цифр */
-      color: #ffe;
-    }
-    .highlight {
-      font-size: 2vw;
-      margin: 3vh 0;
-    }
-    .highlight .number {
-      font-size: 8vw; /* ← Ще більше для золота */
-      color: #ffc800;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="title">
-      ВРЯТУВАТИ<br>
-      РЯДОВОГО<br>
-      РАЯНА
+  <div class="overlay">
+    <div class="damage-block">
+      <div class="label">ЗАЛИШИЛОСЬ</div>
+      <div class="label">НАСТРІЛЯТИ:</div>
+      <div class="flip-damage"><div id="damage-clock"></div></div>
     </div>
 
-    <div class="row big">
-      <div class="stat">
-        <div>ВРЯТОВАНО</div>
-        <div class="number" id="saved">-</div>
+    <div class="note note-gradient">+200 урону за 1 лайк YouTube</div>
+    <div class="note note-gradient">+1 урон за 2 "тапи" в TikTok</div>
+    <div class="note note-gradient">+25 урону за 1 грн</div>
+
+    <div class="countdown-wrapper">
+      <div class="flip-clock-wrapper">
+        <div class="rembo-title">До кінця челенджу</div>
+        <div class="rembo-title">залишилось:</div>
+        <div id="flip-clock"></div>
       </div>
-      <div class="stat">
-        <div>НЕ ВРЯТОВАНО</div>
-        <div class="number" id="notSaved">-</div>
-      </div>
-    </div>
-
-    <div class="stat highlight">
-      <div>К-ть золота до розіграшу</div>
-      <div class="number" id="gold">-</div>
-    </div>
-
-    <div class="stat">
-      <div>К-ть боїв</div>
-      <div class="number" id="battles">-</div>
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
     const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const SHEET_NAME = "VRR";
-    const RANGE = "I2:L2";
+    const GID = "1630188258";
 
-    async function fetchData() {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${RANGE}`;
-      try {
-        const res = await fetch(url);
-        const text = await res.text();
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const row = json.table.rows[0].c.map(cell => cell ? cell.v : "-");
-
-        document.getElementById("battles").textContent = row[0];
-        document.getElementById("gold").textContent = row[1];
-        document.getElementById("saved").textContent = row[2];
-        document.getElementById("notSaved").textContent = row[3];
-      } catch (e) {
-        console.error("Помилка завантаження даних:", e);
-      }
+    async function fetchSingleCell(range) {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
+      const res = await fetch(url);
+      const txt = await res.text();
+      const json = JSON.parse(txt.substring(47).slice(0, -2));
+      return json.table.rows[0].c[0]?.v || 0;
     }
 
-    fetchData();
-    setInterval(fetchData, 15000);
+    $(async function () {
+      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
+        clockFace: 'HourlyCounter', countdown: true, autoStart: true
+      });
+      $('.flip-clock-divider.hours .flip-clock-label').text('Години');
+      $('.flip-clock-divider.minutes .flip-clock-label').text('Хвилини');
+      $('.flip-clock-divider.seconds .flip-clock-label').text('Секунди');
+
+      setInterval(() => {
+        flipClock.setTime(getTimeLeftKyiv());
+      }, 60000);
+
+      const damageClock = $('#damage-clock').FlipClock(0, { clockFace: 'Counter', autoStart: false });
+      let currentDamage = 0;
+      let animationInterval = null;
+      let animationInProgress = false;
+
+      async function animateDamage(newValue) {
+        if (animationInProgress) clearInterval(animationInterval);
+        if (currentDamage === newValue) return;
+
+        const step = newValue > currentDamage ? 1 : -1;
+        const container = document.querySelector('.flip-damage');
+
+        container.classList.toggle('increase', step > 0);
+        container.classList.toggle('decrease', step < 0);
+
+        animationInProgress = true;
+        animationInterval = setInterval(() => {
+          currentDamage += step;
+          damageClock.setTime(currentDamage);
+          if (currentDamage === newValue) {
+            clearInterval(animationInterval);
+            animationInProgress = false;
+            setTimeout(() => container.classList.remove('increase', 'decrease'), 1500);
+          }
+        }, 5);
+      }
+
+      async function updateDamage() {
+        try {
+          let raw = await fetchSingleCell("C14");
+          raw = raw.toString().replace(/\s/g, '');
+          const value = parseInt(raw || 0);
+          animateDamage(value);
+        } catch (e) {
+          console.error("Помилка оновлення дамага:", e);
+        }
+      }
+
+      await updateDamage();
+      setInterval(updateDamage, 15000);
+    });
+
+    function getTimeLeftKyiv() {
+      const now = new Date();
+      const kyiv = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
+      const end = new Date(kyiv);
+      end.setHours(23, 59, 59, 999);
+      return Math.floor((end - kyiv) / 1000);
+    }
   </script>
 </body>
 </html>
