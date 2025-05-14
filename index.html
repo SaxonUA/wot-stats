@@ -37,17 +37,24 @@
     }
     button {
       margin-top: 20px;
-      padding: 10px 20px;
+      padding: 10px 25px;
       font-size: 16px;
-      background: #149178;
+      background: linear-gradient(145deg, #ff6600, #1a1a1a);
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: all 0.2s ease-in-out;
+    }
+    button:hover {
+      background: linear-gradient(145deg, #ff8800, #2a2a2a);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.35);
     }
     .result {
       margin-top: 10px;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
       color: #ff9900;
     }
@@ -55,14 +62,20 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 60px;
+      gap: 50px;
       margin-top: 30px;
     }
     #battle-task {
       margin-top: 30px;
       padding: 10px 15px;
       border-radius: 10px;
-      background: rgba(255, 102, 0, 0.15);
+      background: repeating-linear-gradient(
+        135deg,
+        rgba(255,102,0,0.15),
+        rgba(255,102,0,0.15) 10px,
+        rgba(255,255,255,0.05) 10px,
+        rgba(255,255,255,0.05) 20px
+      );
       border: 2px solid #ff6600;
       color: #fff;
       max-width: 400px;
@@ -71,7 +84,7 @@
     }
     #battle-task h2 {
       color: #ff6600;
-      margin: 0 0 10px;
+      margin: 5px 0 10px;
     }
     #battle-task .task-tank,
     #battle-task .task-mission {
@@ -82,20 +95,20 @@
   </style>
 </head>
 <body>
-  <h1>🎯 Колесо фортуни від МАРКА 🎯</h1>
+  <h1>🎯 Колесо фортуни від МАРКА</h1>
   <div class="wheel-container">
     <div>
-      <div class="wheel-wrapper" id="tankWrapper">
+      <div class="wheel-wrapper">
         <div class="arrow"></div>
-        <canvas id="tankWheel" width="400" height="400"></canvas>
+        <canvas id="tankWheel" width="300" height="300"></canvas>
       </div>
       <div class="result" id="tankResult">...</div>
       <button onclick="spin('tank')">Крутити танк</button>
     </div>
     <div>
-      <div class="wheel-wrapper" id="missionWrapper">
+      <div class="wheel-wrapper">
         <div class="arrow"></div>
-        <canvas id="missionWheel" width="400" height="400"></canvas>
+        <canvas id="missionWheel" width="300" height="300"></canvas>
       </div>
       <div class="result" id="missionResult">...</div>
       <button onclick="spin('mission')">Крутити завдання</button>
@@ -107,33 +120,13 @@
     <div class="task-mission" id="taskMission">...</div>
   </div>
 
-  <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2eac9fb9d5.mp3"></audio>
-  <audio id="spinSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_c6594027b4.mp3"></audio>
-
   <script>
-    const tanks = [
-      "IS-7", "Maus", "T110E5", "AMX 50 B", "Obj. 140", "Leopard 1", "M48A5 Patton", "Progetto 65",
-      "T-100 LT", "AMX 13 105", "Sheridan", "WZ-132-1", "Grille 15", "Obj. 268 v4", "T110E3", "Strv 103B",
-      "BZ-176", "M47 Iron Arnie", "Char Mle. 75", "T95/FV4201 Chieftain", "Type 5 Heavy", "FV215b", "CS-63",
-      "Centurion AX", "Kranvagn", "E 100", "STB-1", "Bat.-Châtillon 25 t", "Obj. 277", "Super Conqueror",
-      "UDES 15/16", "T57 Heavy", "AMX M4 54", "T-62A", "TVP T 50/51", "121", "Minotauro", "Obj. 263",
-      "VK 72.01 K", "Obj. 705A", "WZ-111 QL", "Char Futur 4", "T26E5", "Skorpion G", "SU-130PM", "IS-3-II",
-      "ISU-152K", "Progetto 46", "Bourrasque", "Somua SM"
-    ];
+    const tanks = ["IS-7", "Maus", "T110E5", "AMX 50 B", "Obj. 140", "Leopard 1", "M48A5 Patton", "Progetto 65", "T-100 LT", "AMX 13 105", "Sheridan", "WZ-132-1", "Grille 15", "Obj. 268 v4", "T110E3", "Strv 103B", "BZ-176", "M47 Iron Arnie", "Char Mle. 75", "T95/FV4201 Chieftain", "Type 5 Heavy", "FV215b", "CS-63", "Centurion AX", "Kranvagn", "E 100", "STB-1", "Bat.-Châtillon 25 t", "Obj. 277", "Super Conqueror", "UDES 15/16", "T57 Heavy", "AMX M4 54", "T-62A", "TVP T 50/51", "121", "Minotauro", "Obj. 263", "VK 72.01 K", "Obj. 705A", "WZ-111 QL", "Char Futur 4", "T26E5", "Skorpion G", "SU-130PM", "IS-3-II", "ISU-152K", "Progetto 46", "Bourrasque", "Somua SM"];
 
-    const missions = [
-      "Знищити 3 ворожі танки", "Нанести 3000+ шкоди", "Вижити до кінця бою", "Зробити 5+ підсвітів",
-      "Знищити артилерію", "2+ фраги без отримання шкоди", "1000+ шкоди за підсвітами",
-      "2 танки в ближньому бою", "Медаль Основний калібр", "3+ критичних пошкодження",
-      "Знищити танк на 2 рівні вище", "Вижити з <10% HP", "5+ влучань поспіль",
-      "Захопити або захистити базу", "Знищити захоплювача бази", "Медаль Воїн",
-      "2 фраги за 30 сек", "Знищити тараном", "Знищити останнім снарядом", "500+ шкоди без виявлення"
-    ];
+    const missions = ["Знищити 3 ворожі танки", "Нанести 3000+ шкоди", "Вижити до кінця бою", "Зробити 5+ підсвітів", "Знищити артилерію", "2+ фраги без отримання шкоди", "1000+ шкоди за підсвітами", "2 танки в ближньому бою", "Медаль Основний калібр", "3+ критичних пошкодження", "Знищити танк на 2 рівні вище", "Вижити з <10% HP", "5+ влучань поспіль", "Захопити або захистити базу", "Знищити захоплювача бази", "Медаль Воїн", "2 фраги за 30 сек", "Знищити тараном", "Знищити останнім снарядом", "500+ шкоди без виявлення"];
 
     let spinning = false;
     let currentAngle = { tank: 0, mission: 0 };
-    const clickSound = document.getElementById("clickSound");
-    const spinSound = document.getElementById("spinSound");
 
     function drawWheel(canvasId, items, angleOffset = 0, highlightIndex = -1) {
       const canvas = document.getElementById(canvasId);
@@ -158,7 +151,7 @@
         ctx.textAlign = "right";
         ctx.fillStyle = "white";
         ctx.font = "10px sans-serif";
-        ctx.fillText(items[i].slice(0, 20), radius - 10, 4);
+        ctx.fillText(items[i].slice(0, 22), radius - 10, 4);
         ctx.restore();
       }
     }
@@ -175,8 +168,6 @@
       const deceleration = 0.002 + Math.random() * 0.003;
       let lastIndex = -1;
 
-      spinSound.play();
-
       const interval = setInterval(() => {
         angle += velocity;
         velocity *= 0.982;
@@ -184,7 +175,6 @@
         const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
 
         if (index !== lastIndex) {
-          clickSound.play();
           lastIndex = index;
         }
 
