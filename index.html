@@ -12,13 +12,11 @@
     }
     h1 {
       margin-top: 20px;
-      text-align: center;
     }
     canvas {
       background: #222;
       border-radius: 50%;
       box-shadow: 0 0 15px #444;
-      position: relative;
     }
     .wheel-wrapper {
       position: relative;
@@ -41,7 +39,7 @@
       margin-top: 20px;
       padding: 10px 20px;
       font-size: 16px;
-      background: #28a745;
+      background: #149178;
       color: white;
       border: none;
       border-radius: 5px;
@@ -49,7 +47,7 @@
     }
     .result {
       margin-top: 10px;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       color: #ff9900;
     }
@@ -57,12 +55,12 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 50px;
+      gap: 60px;
       margin-top: 30px;
     }
     #battle-task {
       margin-top: 30px;
-      padding: 15px;
+      padding: 10px 15px;
       border-radius: 10px;
       background: rgba(255, 102, 0, 0.15);
       border: 2px solid #ff6600;
@@ -70,19 +68,12 @@
       max-width: 400px;
       margin-left: auto;
       margin-right: auto;
-      padding-top: 10px;
     }
     #battle-task h2 {
       color: #ff6600;
-      margin-top: 0;
-      margin-bottom: 10px;
+      margin: 0 0 10px;
     }
-    #battle-task .task-tank {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #fff;
-    }
+    #battle-task .task-tank,
     #battle-task .task-mission {
       font-size: 18px;
       font-weight: bold;
@@ -96,7 +87,7 @@
     <div>
       <div class="wheel-wrapper" id="tankWrapper">
         <div class="arrow"></div>
-        <canvas id="tankWheel" width="300" height="300"></canvas>
+        <canvas id="tankWheel" width="400" height="400"></canvas>
       </div>
       <div class="result" id="tankResult">...</div>
       <button onclick="spin('tank')">Крутити танк</button>
@@ -104,7 +95,7 @@
     <div>
       <div class="wheel-wrapper" id="missionWrapper">
         <div class="arrow"></div>
-        <canvas id="missionWheel" width="300" height="300"></canvas>
+        <canvas id="missionWheel" width="400" height="400"></canvas>
       </div>
       <div class="result" id="missionResult">...</div>
       <button onclick="spin('mission')">Крутити завдання</button>
@@ -115,6 +106,9 @@
     <div class="task-tank" id="taskTank">...</div>
     <div class="task-mission" id="taskMission">...</div>
   </div>
+
+  <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2eac9fb9d5.mp3"></audio>
+  <audio id="spinSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_c6594027b4.mp3"></audio>
 
   <script>
     const tanks = [
@@ -138,8 +132,10 @@
 
     let spinning = false;
     let currentAngle = { tank: 0, mission: 0 };
+    const clickSound = document.getElementById("clickSound");
+    const spinSound = document.getElementById("spinSound");
 
-    function drawWheel(canvasId, items, angleOffset = 0) {
+    function drawWheel(canvasId, items, angleOffset = 0, highlightIndex = -1) {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext("2d");
       const radius = canvas.width / 2;
@@ -154,15 +150,15 @@
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.arc(centerX, centerY, radius, angle, angle + angleStep);
-        ctx.fillStyle = i % 2 === 0 ? "#ff6600" : "#1a1a1a";
+        ctx.fillStyle = (i === highlightIndex) ? "#ffa600" : (i % 2 === 0 ? "#ff6600" : "#1a1a1a");
         ctx.fill();
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(angle + angleStep / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "white";
-        ctx.font = "11px sans-serif";
-        ctx.fillText(items[i].slice(0, 18), radius - 10, 5);
+        ctx.font = "10px sans-serif";
+        ctx.fillText(items[i].slice(0, 20), radius - 10, 4);
         ctx.restore();
       }
     }
@@ -175,17 +171,28 @@
       const resultId = type === 'tank' ? 'tankResult' : 'missionResult';
       const items = type === 'tank' ? tanks : missions;
       let angle = currentAngle[type];
-      let velocity = Math.random() * 0.3 + 0.4;
-      const deceleration = 0.002 + Math.random() * 0.0025;
+      let velocity = Math.random() * 0.3 + 0.6;
+      const deceleration = 0.002 + Math.random() * 0.003;
+      let lastIndex = -1;
+
+      spinSound.play();
 
       const interval = setInterval(() => {
         angle += velocity;
         velocity *= 0.982;
-        drawWheel(canvasId, items, angle);
+
+        const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
+
+        if (index !== lastIndex) {
+          clickSound.play();
+          lastIndex = index;
+        }
+
+        drawWheel(canvasId, items, angle, index);
+
         if (velocity < deceleration) {
           clearInterval(interval);
           currentAngle[type] = angle % (2 * Math.PI);
-          const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
           const selected = items[index];
           document.getElementById(resultId).textContent = selected;
           spinning = false;
