@@ -12,6 +12,7 @@
     }
     h1 {
       margin-top: 20px;
+      text-align: center;
     }
     canvas {
       background: #222;
@@ -22,10 +23,6 @@
     .wheel-wrapper {
       position: relative;
       display: inline-block;
-      transition: box-shadow 0.3s ease;
-    }
-    .wheel-wrapper.highlight {
-      box-shadow: 0 0 30px 10px #ffff00;
     }
     .arrow {
       width: 0;
@@ -39,18 +36,6 @@
       transform: translateX(-50%) rotate(180deg);
       z-index: 10;
     }
-    .smoke {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      animation: puff 4s infinite;
-    }
-    @keyframes puff {
-      0% { transform: scale(0.5) translateY(0); opacity: 0.4; }
-      100% { transform: scale(2.5) translateY(-100px); opacity: 0; }
-    }
     button {
       margin-top: 20px;
       padding: 10px 20px;
@@ -63,12 +48,9 @@
     }
     .result {
       margin-top: 20px;
-      font-size: 20px;
-      color: #00ffcc;
-    }
-    .history {
-      margin-top: 30px;
-      color: #ccc;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff9900;
     }
     .wheel-container {
       display: flex;
@@ -77,53 +59,59 @@
       gap: 50px;
       margin-top: 30px;
     }
+    #confirm {
+      margin-top: 30px;
+      font-weight: bold;
+      color: #00ff88;
+      transition: opacity 0.5s ease;
+    }
   </style>
 </head>
 <body>
-  <h1>🎯 Колесо фортуни World of Tanks</h1>
+  <h1>🎯 Колесо фортуни від МАРКА</h1>
   <div class="wheel-container">
     <div>
       <div class="wheel-wrapper" id="tankWrapper">
         <div class="arrow"></div>
         <canvas id="tankWheel" width="300" height="300"></canvas>
       </div>
-      <button onclick="spin('tank')">Крутити танк</button>
       <div class="result" id="tankResult">...</div>
+      <button onclick="spin('tank')">Крутити танк</button>
     </div>
     <div>
       <div class="wheel-wrapper" id="missionWrapper">
         <div class="arrow"></div>
         <canvas id="missionWheel" width="300" height="300"></canvas>
       </div>
-      <button onclick="spin('mission')">Крутити завдання</button>
       <div class="result" id="missionResult">...</div>
+      <button onclick="spin('mission')">Крутити завдання</button>
     </div>
   </div>
-
-  <div class="history" id="history"></div>
-  <button onclick="saveResult()">💾 Зберегти результат</button>
+  <div id="confirm"></div>
+  <button onclick="testSendToSheet()">🧪 Перевірити запис у таблицю</button>
 
   <script>
     const tanks = [
-  "IS-7", "Maus", "T110E5", "AMX 50 B", "Obj. 140", "Leopard 1", "M48A5 Patton", "Progetto 65",
-  "T-100 LT", "AMX 13 105", "Sheridan", "WZ-132-1", "Grille 15", "Obj. 268 v4", "T110E3", "Strv 103B",
-  "BZ-176", "M47 Iron Arnie", "Char Mle. 75", "T95/FV4201 Chieftain", "Type 5 Heavy", "FV215b", "CS-63",
-  "Centurion AX", "Kranvagn", "E 100", "STB-1", "Bat.-Châtillon 25 t", "Obj. 277", "Super Conqueror",
-  "UDES 15/16", "T57 Heavy", "AMX M4 54", "T-62A", "TVP T 50/51", "121", "Minotauro", "Obj. 263",
-  "VK 72.01 K", "Obj. 705A", "WZ-111 QL", "Char Futur 4", "T26E5", "Skorpion G", "SU-130PM", "IS-3-II",
-  "ISU-152K", "Progetto 46", "Bourrasque", "Somua SM"
-];
+      "IS-7", "Maus", "T110E5", "AMX 50 B", "Obj. 140", "Leopard 1", "M48A5 Patton", "Progetto 65",
+      "T-100 LT", "AMX 13 105", "Sheridan", "WZ-132-1", "Grille 15", "Obj. 268 v4", "T110E3", "Strv 103B",
+      "BZ-176", "M47 Iron Arnie", "Char Mle. 75", "T95/FV4201 Chieftain", "Type 5 Heavy", "FV215b", "CS-63",
+      "Centurion AX", "Kranvagn", "E 100", "STB-1", "Bat.-Châtillon 25 t", "Obj. 277", "Super Conqueror",
+      "UDES 15/16", "T57 Heavy", "AMX M4 54", "T-62A", "TVP T 50/51", "121", "Minotauro", "Obj. 263",
+      "VK 72.01 K", "Obj. 705A", "WZ-111 QL", "Char Futur 4", "T26E5", "Skorpion G", "SU-130PM", "IS-3-II",
+      "ISU-152K", "Progetto 46", "Bourrasque", "Somua SM"
+    ];
+
     const missions = [
-  "Знищити 3 ворожі танки", "Нанести 3000+ шкоди", "Вижити до кінця бою", "Зробити 5+ підсвітів",
-  "Знищити артилерію", "2+ фраги без отримання шкоди", "1000+ шкоди за підсвітами",
-  "2 танки в ближньому бою", "Медаль Основний калібр", "3+ критичних пошкодження",
-  "Знищити танк на 2 рівні вище", "Вижити з <10% HP", "5+ влучань поспіль",
-  "Захопити або захистити базу", "Знищити захоплювача бази", "Медаль Воїн",
-  "2 фраги за 30 сек", "Знищити тараном", "Знищити останнім снарядом", "500+ шкоди без виявлення"
-];
+      "Знищити 3 ворожі танки", "Нанести 3000+ шкоди", "Вижити до кінця бою", "Зробити 5+ підсвітів",
+      "Знищити артилерію", "2+ фраги без отримання шкоди", "1000+ шкоди за підсвітами",
+      "2 танки в ближньому бою", "Медаль Основний калібр", "3+ критичних пошкодження",
+      "Знищити танк на 2 рівні вище", "Вижити з <10% HP", "5+ влучань поспіль",
+      "Захопити або захистити базу", "Знищити захоплювача бази", "Медаль Воїн",
+      "2 фраги за 30 сек", "Знищити тараном", "Знищити останнім снарядом", "500+ шкоди без виявлення"
+    ];
+
     let spinning = false;
     let currentAngle = { tank: 0, mission: 0 };
-    const history = [];
 
     function drawWheel(canvasId, items, angleOffset = 0) {
       const canvas = document.getElementById(canvasId);
@@ -134,6 +122,7 @@
       const total = items.length;
       const angleStep = (2 * Math.PI) / total;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       for (let i = 0; i < total; i++) {
         const angle = i * angleStep + angleOffset;
         ctx.beginPath();
@@ -155,15 +144,13 @@
     function spin(type) {
       if (spinning) return;
       spinning = true;
+
       const canvasId = type === 'tank' ? 'tankWheel' : 'missionWheel';
-      const wrapperId = type === 'tank' ? 'tankWrapper' : 'missionWrapper';
       const resultId = type === 'tank' ? 'tankResult' : 'missionResult';
       const items = type === 'tank' ? tanks : missions;
       let angle = currentAngle[type];
       let velocity = Math.random() * 0.1 + 0.15;
       const deceleration = 0.001;
-      const wrapper = document.getElementById(wrapperId);
-      wrapper.classList.remove("highlight");
 
       const interval = setInterval(() => {
         angle += velocity;
@@ -175,33 +162,55 @@
           const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
           const selected = items[index];
           document.getElementById(resultId).textContent = selected;
-          wrapper.classList.add("highlight");
+          const tank = document.getElementById('tankResult').textContent;
+          const mission = document.getElementById('missionResult').textContent;
+          if (tank !== '...' && mission !== '...') {
+            sendToSheet(tank, mission);
+          }
           spinning = false;
-          updateHistory();
         }
       }, 20);
     }
 
-    function updateHistory() {
-      const tank = document.getElementById('tankResult').textContent;
-      const mission = document.getElementById('missionResult').textContent;
-      if (tank !== '...' && mission !== '...') {
-        history.push([tank, mission]);
-        const div = document.getElementById('history');
-        div.innerHTML = `<h3>Історія спінів</h3><ul>` +
-          history.map((h, i) => `<li>${i + 1}. ${h[0]} — ${h[1]}</li>`).join('') + '</ul>';
-      }
+    function sendToSheet(tank, mission) {
+      fetch('https://script.google.com/macros/s/AKfycbyJKOq6gVUOGIEQ6EODFhynT-zyMz_RKA_VJWJU9Hci7E8VlK9FSTZuf2Bd6pAX00Himw/exec', {
+        method: 'POST',
+        body: JSON.stringify({ tank: tank, mission: mission }),
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        return res.text();
+      })
+      .then(text => {
+        console.log("✅ Відповідь від Google Script:", text);
+        const confirm = document.getElementById("confirm");
+        confirm.textContent = `✅ Результат збережено: ${tank} — ${mission}`;
+        confirm.style.opacity = 1;
+        confirm.style.color = "#00ff88";
+        setTimeout(() => {
+          confirm.style.opacity = 0;
+        }, 3000);
+      })
+      .catch(err => {
+        console.error("❌ Помилка при записі в таблицю:", err);
+        const confirm = document.getElementById("confirm");
+        confirm.textContent = `❌ Помилка збереження: ${err.message}`;
+        confirm.style.color = "#ff4444";
+        confirm.style.opacity = 1;
+        setTimeout(() => {
+          confirm.style.opacity = 0;
+          confirm.style.color = "#00ff88";
+        }, 4000);
+      });
     }
 
-    function saveResult() {
-      const tank = document.getElementById('tankResult').textContent;
-      const mission = document.getElementById('missionResult').textContent;
-      const text = `Танк: ${tank}\nЗавдання: ${mission}`;
-      const blob = new Blob([text], { type: 'text/plain' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'wot_result.txt';
-      a.click();
+    function testSendToSheet() {
+      const tank = 'TEST_TANK';
+      const mission = 'TEST_MISSION';
+      sendToSheet(tank, mission);
     }
 
     window.onload = () => {
