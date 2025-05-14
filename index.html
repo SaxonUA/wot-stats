@@ -65,10 +65,30 @@
       color: #00ff88;
       transition: opacity 0.5s ease;
     }
+    #battle-task {
+      margin-top: 40px;
+      padding: 20px;
+      border-radius: 10px;
+      background: rgba(255, 102, 0, 0.1);
+      border: 2px solid #ff6600;
+      color: #fff;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #battle-task h2 {
+      color: #ff6600;
+      margin-bottom: 10px;
+    }
+    #battle-task .task-content {
+      font-size: 20px;
+      font-weight: bold;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
-  <h1>🎯 Колесо фортуни від МАРКА</h1>
+  <h1>🎯 Колесо фортуни від МАРКА 🎯</h1>
   <div class="wheel-container">
     <div>
       <div class="wheel-wrapper" id="tankWrapper">
@@ -88,7 +108,10 @@
     </div>
   </div>
   <div id="confirm"></div>
-  <button onclick="testSendToSheet()">🧪 Перевірити запис у таблицю</button>
+  <div id="battle-task">
+    <h2>Завдання на бій</h2>
+    <div class="task-content" id="finalTask">...</div>
+  </div>
 
   <script>
     const tanks = [
@@ -162,55 +185,15 @@
           const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
           const selected = items[index];
           document.getElementById(resultId).textContent = selected;
+          spinning = false;
+
           const tank = document.getElementById('tankResult').textContent;
           const mission = document.getElementById('missionResult').textContent;
           if (tank !== '...' && mission !== '...') {
-            sendToSheet(tank, mission);
+            document.getElementById('finalTask').textContent = `${tank} — ${mission}`;
           }
-          spinning = false;
         }
       }, 20);
-    }
-
-    function sendToSheet(tank, mission) {
-      fetch('https://script.google.com/macros/s/AKfycbyJKOq6gVUOGIEQ6EODFhynT-zyMz_RKA_VJWJU9Hci7E8VlK9FSTZuf2Bd6pAX00Himw/exec', {
-        method: 'POST',
-        body: JSON.stringify({ tank: tank, mission: mission }),
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        return res.text();
-      })
-      .then(text => {
-        console.log("✅ Відповідь від Google Script:", text);
-        const confirm = document.getElementById("confirm");
-        confirm.textContent = `✅ Результат збережено: ${tank} — ${mission}`;
-        confirm.style.opacity = 1;
-        confirm.style.color = "#00ff88";
-        setTimeout(() => {
-          confirm.style.opacity = 0;
-        }, 3000);
-      })
-      .catch(err => {
-        console.error("❌ Помилка при записі в таблицю:", err);
-        const confirm = document.getElementById("confirm");
-        confirm.textContent = `❌ Помилка збереження: ${err.message}`;
-        confirm.style.color = "#ff4444";
-        confirm.style.opacity = 1;
-        setTimeout(() => {
-          confirm.style.opacity = 0;
-          confirm.style.color = "#00ff88";
-        }, 4000);
-      });
-    }
-
-    function testSendToSheet() {
-      const tank = 'TEST_TANK';
-      const mission = 'TEST_MISSION';
-      sendToSheet(tank, mission);
     }
 
     window.onload = () => {
