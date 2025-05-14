@@ -2,183 +2,212 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ранг</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>Колесо фортуни WoT</title>
   <style>
     body {
-      background: #222;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-family: 'Montserrat', sans-serif;
-    }
-    .card {
-      background: rgba(0, 0, 0, 0.85);
-      width: 260px;
-      padding: 20px;
-      border-radius: 15px;
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
       text-align: center;
-      position: relative;
-      margin-top: 40px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.6);
     }
-    .title {
-      font-size: 20px;
-      margin-top: 10px;
-    }
-    .score {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px 0 20px 0;
-    }
-    .map-list {
+    h1 {
       margin-top: 20px;
-      font-size: 18px;
     }
-    .map-item {
+    canvas {
+      background: #222;
+      border-radius: 50%;
+      box-shadow: 0 0 15px #444;
+      position: relative;
+    }
+    .wheel-wrapper {
+      position: relative;
+      display: inline-block;
+      transition: box-shadow 0.3s ease;
+    }
+    .wheel-wrapper.highlight {
+      box-shadow: 0 0 30px 10px #ffff00;
+    }
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 35px solid red;
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+      z-index: 10;
+    }
+    .smoke {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: puff 4s infinite;
+    }
+    @keyframes puff {
+      0% { transform: scale(0.5) translateY(0); opacity: 0.4; }
+      100% { transform: scale(2.5) translateY(-100px); opacity: 0; }
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #00ffcc;
+    }
+    .history {
+      margin-top: 30px;
+      color: #ccc;
+    }
+    .wheel-container {
       display: flex;
       justify-content: center;
-      align-items: center;
-      margin: 2px 0;
-      gap: 10px;
-    }
-  .map-name {
-  text-align: right;
-  width: 180px;
-  word-break: break-word;
-  color: #fff; /* білий колір */
-}
-    .map-score {
-      text-align: right;
-      min-width: 30px;
-    }
-    .positive { color: #00ff00; }
-    .negative { color: #ff6666; }
-    .progress-container {
-      margin: 10px auto 0 auto;
-      position: relative;
-      width: 80%;
-    }
-    .rank-progress {
-      position: relative;
-      height: 6px;
-      background: #555;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: linear-gradient(90deg, #ff9900, #ffcc00);
-      animation: pulse 1.5s infinite alternate;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
-    .ticks {
-      position: absolute;
-      width: 100%;
-      height: 8px;
-    }
-    .ticks-top { top: -8px; }
-    .ticks-bottom { top: 6px; }
-    .tick {
-      position: absolute;
-      width: 1px;
-      background: white;
-      height: 4px;
-    }
-    .labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 18px;
-      margin-top: 10px;
-      color: #aaa;
-    }
-    .labels span.active {
-      color: #ff9900;
-      text-shadow: 0 0 5px #ff9900;
-      font-weight: bold;
+      flex-wrap: wrap;
+      gap: 50px;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="title" id="rank-title">...</div>
-    <div class="score" id="rank-score">...</div>
-
-    <div class="progress-container">
-      <div class="rank-progress">
-        <div class="progress-fill" id="progress-fill"></div>
-        <div class="ticks ticks-top" id="ticks-top"></div>
-        <div class="ticks ticks-bottom" id="ticks-bottom"></div>
+  <h1>🎯 Колесо фортуни World of Tanks</h1>
+  <div class="wheel-container">
+    <div>
+      <div class="wheel-wrapper" id="tankWrapper">
+        <div class="arrow"></div>
+        <canvas id="tankWheel" width="300" height="300"></canvas>
       </div>
-      <div class="labels" id="labels"></div>
+      <button onclick="spin('tank')">Крутити танк</button>
+      <div class="result" id="tankResult">...</div>
     </div>
-
-    <div class="map-list" id="map-list"></div>
+    <div>
+      <div class="wheel-wrapper" id="missionWrapper">
+        <div class="arrow"></div>
+        <canvas id="missionWheel" width="300" height="300"></canvas>
+      </div>
+      <button onclick="spin('mission')">Крутити завдання</button>
+      <div class="result" id="missionResult">...</div>
+    </div>
   </div>
 
+  <div class="history" id="history"></div>
+  <button onclick="saveResult()">💾 Зберегти результат</button>
+
   <script>
-    const ranks = [
-      { name: 'Залізо', from: 0, to: 499 },
-      { name: 'Бронза', from: 500, to: 999 },
-      { name: 'Срібло', from: 1000, to: 1499 },
-      { name: 'Золото', from: 1500, to: 1999 },
-      { name: 'Чемпіон', from: 2000, to: 2999 }
-    ];
-    const divisions = ['E', 'D', 'C', 'B', 'A'];
+    const tanks = [
+  "IS-7", "Maus", "T110E5", "AMX 50 B", "Obj. 140", "Leopard 1", "M48A5 Patton", "Progetto 65",
+  "T-100 LT", "AMX 13 105", "Sheridan", "WZ-132-1", "Grille 15", "Obj. 268 v4", "T110E3", "Strv 103B",
+  "BZ-176", "M47 Iron Arnie", "Char Mle. 75", "T95/FV4201 Chieftain", "Type 5 Heavy", "FV215b", "CS-63",
+  "Centurion AX", "Kranvagn", "E 100", "STB-1", "Bat.-Châtillon 25 t", "Obj. 277", "Super Conqueror",
+  "UDES 15/16", "T57 Heavy", "AMX M4 54", "T-62A", "TVP T 50/51", "121", "Minotauro", "Obj. 263",
+  "VK 72.01 K", "Obj. 705A", "WZ-111 QL", "Char Futur 4", "T26E5", "Skorpion G", "SU-130PM", "IS-3-II",
+  "ISU-152K", "Progetto 46", "Bourrasque", "Somua SM"
+];
+    const missions = [
+  "Знищити 3 ворожі танки", "Нанести 3000+ шкоди", "Вижити до кінця бою", "Зробити 5+ підсвітів",
+  "Знищити артилерію", "2+ фраги без отримання шкоди", "1000+ шкоди за підсвітами",
+  "2 танки в ближньому бою", "Медаль Основний калібр", "3+ критичних пошкодження",
+  "Знищити танк на 2 рівні вище", "Вижити з <10% HP", "5+ влучань поспіль",
+  "Захопити або захистити базу", "Знищити захоплювача бази", "Медаль Воїн",
+  "2 фраги за 30 сек", "Знищити тараном", "Знищити останнім снарядом", "500+ шкоди без виявлення"
+];
+    let spinning = false;
+    let currentAngle = { tank: 0, mission: 0 };
+    const history = [];
 
-    function loadData() {
-      const url = 'https://docs.google.com/spreadsheets/d/1weu6uic-ra_0NwrnJsxhF47SErfyt8WGSeoPHaQyPTg/gviz/tq?tqx=out:json&gid=1485670007&t=' + new Date().getTime();
-      fetch(url)
-        .then(response => response.text())
-        .then(text => JSON.parse(text.substr(47).slice(0, -2)))
-        .then(data => {
-          const rows = data.table.rows;
-
-          const rank = rows[0].c[0].v;
-          const rankTitle = rows[0].c[6].v;
-
-          document.getElementById('rank-title').innerText = rankTitle;
-          document.getElementById('rank-score').innerText = rank;
-
-          const currentRank = ranks.find(r => rank >= r.from && rank <= r.to);
-          if (currentRank) {
-            const rankRange = currentRank.to - currentRank.from + 1;
-            const percentInRank = ((rank - currentRank.from) / rankRange) * 100;
-            document.getElementById('progress-fill').style.width = `${percentInRank}%`;
-
-            const divisionSize = rankRange / divisions.length;
-            const divisionIndex = Math.min(Math.floor((rank - currentRank.from) / divisionSize), divisions.length - 1);
-
-            const ticksHTML = divisions.map((div, i) => `<div class="tick" style="left:${(i / (divisions.length - 1)) * 100}%"></div>`).join('');
-            document.getElementById('ticks-top').innerHTML = ticksHTML;
-            document.getElementById('ticks-bottom').innerHTML = ticksHTML;
-
-            document.getElementById('labels').innerHTML = divisions.map((div, i) => `<span class="${i === divisionIndex ? 'active' : ''}">${div}</span>`).join('');
-          }
-
-          const mapHTML = rows.slice(2, 7)
-            .filter(row => row.c[6] && row.c[6].v && row.c[7] != null)
-            .map(row => {
-              const mapName = row.c[6].v;
-              const score = row.c[7].v;
-              const scoreClass = score >= 0 ? 'positive' : 'negative';
-              const displayScore = Math.abs(score);
-              return `<div class="map-item"><span class="map-name">${mapName}</span><span class="map-score ${scoreClass}">${displayScore}</span></div>`;
-            }).join('');
-          document.getElementById('map-list').innerHTML = mapHTML;
-        });
+    function drawWheel(canvasId, items, angleOffset = 0) {
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext("2d");
+      const radius = canvas.width / 2;
+      const centerX = radius;
+      const centerY = radius;
+      const total = items.length;
+      const angleStep = (2 * Math.PI) / total;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < total; i++) {
+        const angle = i * angleStep + angleOffset;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + angleStep);
+        ctx.fillStyle = i % 2 === 0 ? "#ff6600" : "#1a1a1a";
+        ctx.fill();
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle + angleStep / 2);
+        ctx.textAlign = "right";
+        ctx.fillStyle = "white";
+        ctx.font = "11px sans-serif";
+        ctx.fillText(items[i].slice(0, 18), radius - 10, 5);
+        ctx.restore();
+      }
     }
 
-    loadData();
-    setInterval(loadData, 10000);
+    function spin(type) {
+      if (spinning) return;
+      spinning = true;
+      const canvasId = type === 'tank' ? 'tankWheel' : 'missionWheel';
+      const wrapperId = type === 'tank' ? 'tankWrapper' : 'missionWrapper';
+      const resultId = type === 'tank' ? 'tankResult' : 'missionResult';
+      const items = type === 'tank' ? tanks : missions;
+      let angle = currentAngle[type];
+      let velocity = Math.random() * 0.1 + 0.15;
+      const deceleration = 0.001;
+      const wrapper = document.getElementById(wrapperId);
+      wrapper.classList.remove("highlight");
+
+      const interval = setInterval(() => {
+        angle += velocity;
+        velocity *= 0.99;
+        drawWheel(canvasId, items, angle);
+        if (velocity < deceleration) {
+          clearInterval(interval);
+          currentAngle[type] = angle % (2 * Math.PI);
+          const index = Math.floor(((3 * Math.PI / 2 - (angle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI) * items.length) % items.length;
+          const selected = items[index];
+          document.getElementById(resultId).textContent = selected;
+          wrapper.classList.add("highlight");
+          spinning = false;
+          updateHistory();
+        }
+      }, 20);
+    }
+
+    function updateHistory() {
+      const tank = document.getElementById('tankResult').textContent;
+      const mission = document.getElementById('missionResult').textContent;
+      if (tank !== '...' && mission !== '...') {
+        history.push([tank, mission]);
+        const div = document.getElementById('history');
+        div.innerHTML = `<h3>Історія спінів</h3><ul>` +
+          history.map((h, i) => `<li>${i + 1}. ${h[0]} — ${h[1]}</li>`).join('') + '</ul>';
+      }
+    }
+
+    function saveResult() {
+      const tank = document.getElementById('tankResult').textContent;
+      const mission = document.getElementById('missionResult').textContent;
+      const text = `Танк: ${tank}\nЗавдання: ${mission}`;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'wot_result.txt';
+      a.click();
+    }
+
+    window.onload = () => {
+      drawWheel("tankWheel", tanks);
+      drawWheel("missionWheel", missions);
+    };
   </script>
 </body>
 </html>
