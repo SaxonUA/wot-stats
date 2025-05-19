@@ -69,7 +69,7 @@
       transform: scaleY(-1) skewX(-10deg);
       opacity: 0.75;
       filter: blur(2px);
-      margin-top: -10px;
+      margin-top: -30px; /* було -10px */
     }
 
     .reflection span {
@@ -82,7 +82,6 @@
     /* Блимання */
     .blink {
       animation: blinkFade 1s steps(1, start) infinite;
-      
     }
 
     @keyframes blinkFade {
@@ -106,7 +105,7 @@
     <div class="reflection">
       <span id="min1">0</span>
       <span id="min2">0</span>
-      <span id="blink-colon">:</span>
+      <span id="blink-colon" class="blink">:</span>
       <span id="sec1">0</span>
       <span id="sec2">0</span>
     </div>
@@ -119,9 +118,6 @@
     const min2 = document.getElementById("min2");
     const sec1 = document.getElementById("sec1");
     const sec2 = document.getElementById("sec2");
-
-    const blinkX = document.getElementById("blink-x");
-    const blinkColon = document.getElementById("blink-colon");
 
     function updateTimeDisplay() {
       const minutes = String(Math.floor(duration / 60)).padStart(2, '0');
