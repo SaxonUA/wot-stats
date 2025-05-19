@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Таймер без рамки</title>
+  <title>Таймер з близьким віддзеркаленням</title>
   <style>
     html, body {
       margin: 0;
@@ -25,34 +25,36 @@
     .timer-box {
       position: relative;
       width: 100%;
-      height: 180px;
-      background: transparent;
+      height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .progress-fill {
-      display: none; /* Вимкнено, бо рамки та бар видалені */
+      background: transparent;
     }
 
     .timer-text {
       font-size: 80px;
-      background: linear-gradient(45deg, orange, black);
+      background: linear-gradient(270deg, orange, black, orange);
+      background-size: 600% 600%;
+      animation: gradientShift 5s ease infinite;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 20px orange;
       z-index: 2;
     }
 
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.5; /* Яскравіше */
-      filter: blur(2px); /* Менше розмиття */
-      position: absolute;
-      top: 100%;
-      width: 100%;
-      height: 180px;
+      opacity: 0.35;
+      filter: blur(2px);
+      margin-top: -20px; /* ближче до основного таймера */
+      height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -65,7 +67,7 @@
     <div class="timer-box">
       <div class="timer-text" id="timer">03:00</div>
     </div>
-    <div class="timer-box reflection">
+    <div class="reflection">
       <div class="timer-text" id="reflection">03:00</div>
     </div>
   </div>
@@ -74,7 +76,6 @@
     let duration = 180;
     const timerEl = document.getElementById('timer');
     const reflectionEl = document.getElementById('reflection');
-    const total = duration;
 
     function updateTimer() {
       const minutes = String(Math.floor(duration / 60)).padStart(2, '0');
