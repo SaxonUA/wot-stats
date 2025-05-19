@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Таймер без проміжку</title>
+  <title>Таймер з реалістичним віддзеркаленням</title>
   <style>
     html, body {
       margin: 0;
@@ -46,12 +46,16 @@
 
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.4;
-      filter: blur(2px);
-      margin-top: -10px; /* Впритул */
+      opacity: 0.15;
+      filter: blur(2px) grayscale(100%);
+      margin-top: -10px;
       line-height: 1;
       height: auto;
       pointer-events: none;
+      color: rgba(0, 0, 0, 0.4);
+      -webkit-text-fill-color: rgba(0, 0, 0, 0.4);
+      background: none;
+      text-shadow: none;
     }
   </style>
 </head>
