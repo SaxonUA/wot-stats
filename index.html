@@ -43,7 +43,7 @@
       text-shadow: 0 0 15px orange;
     }
 
-    /* Літера x — помаранчева, блимає */
+    /* Літера x — блимає */
     #blink-x {
       color: orange;
       transition: opacity 0.3s ease;
@@ -61,7 +61,12 @@
       color: rgba(0, 0, 0, 0.85);
       -webkit-text-fill-color: rgba(0, 0, 0, 0.85);
       background: none;
-      text-shadow: none;
+      /* Біла окантовка */
+      text-shadow:
+        -1px -1px 0 white,
+         1px -1px 0 white,
+        -1px  1px 0 white,
+         1px  1px 0 white;
     }
 
     /* Блимання */
