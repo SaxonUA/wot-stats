@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Великий таймер з віддзеркаленням</title>
+  <title>Таймер без проміжку</title>
   <style>
     html, body {
       margin: 0;
@@ -22,16 +22,6 @@
       transform: translateY(-50%);
     }
 
-    .timer-box {
-      position: relative;
-      width: 100%;
-      height: 240px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-    }
-
     .timer-text {
       font-size: 160px;
       background: linear-gradient(270deg, orange, black, orange);
@@ -40,7 +30,6 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 30px orange;
-      z-index: 2;
     }
 
     @keyframes gradientShift {
@@ -49,31 +38,27 @@
       100% { background-position: 0% 50%; }
     }
 
+    .reflection-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .reflection {
       transform: scaleY(-1);
       opacity: 0.4;
       filter: blur(2px);
-      margin-top: -5px; /* максимально близько */
-      height: 240px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
+      margin-top: -10px; /* Впритул */
+      line-height: 1;
+      height: auto;
       pointer-events: none;
-    }
-
-    .reflection .timer-text {
-      font-size: 160px;
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="timer-box">
-      <div class="timer-text" id="timer">03:00</div>
-    </div>
-    <div class="reflection">
-      <div class="timer-text" id="reflection">03:00</div>
-    </div>
+  <div class="wrapper reflection-container">
+    <div class="timer-text" id="timer">03:00</div>
+    <div class="timer-text reflection" id="reflection">03:00</div>
   </div>
 
   <script>
