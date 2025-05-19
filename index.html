@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Таймер із темним переливчастим віддзеркаленням</title>
+  <title>Таймер з чорним відображенням</title>
   <style>
     html, body {
       margin: 0;
@@ -42,18 +42,16 @@
 
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.4;
+      opacity: 0.3;
       filter: blur(2px);
       margin-top: -10px;
       line-height: 1;
       height: auto;
       pointer-events: none;
       font-size: 160px;
-      background: linear-gradient(270deg, #111, #666, #111);
-      background-size: 600% 600%;
-      animation: reflectionShift 5s ease infinite;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: black;
+      -webkit-text-fill-color: black;
+      background: none;
       text-shadow: none;
     }
 
@@ -61,12 +59,6 @@
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
-    }
-
-    @keyframes reflectionShift {
-      0% { background-position: 100% 50%; }
-      50% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
     }
   </style>
 </head>
