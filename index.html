@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SAxON Timer</title>
   <style>
     html, body {
       margin: 0;
-      background: #fff;
+      background: transparent;
       height: 100%;
       display: flex;
       justify-content: center;
@@ -43,16 +43,16 @@
       text-shadow: 0 0 15px orange;
     }
 
-    /* Дзеркальне відображення таймера */
+    /* Дзеркальне відображення чорним кольором */
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.3;
+      opacity: 0.6;
       filter: blur(2px);
     }
 
     .reflection span {
-      color: black;
-      -webkit-text-fill-color: black;
+      color: rgba(0, 0, 0, 0.85);
+      -webkit-text-fill-color: rgba(0, 0, 0, 0.85);
       background: none;
       text-shadow: none;
     }
@@ -70,7 +70,7 @@
 </head>
 <body>
   <div class="wrapper">
-    <!-- Верхній текст SAxON -->
+    <!-- Верхній напис -->
     <div class="line" id="main">
       <span>S</span>
       <span>A</span>
@@ -79,7 +79,7 @@
       <span>N</span>
     </div>
 
-    <!-- Віддзеркалення таймера -->
+    <!-- Віддзеркалення -->
     <div class="reflection" id="mirror">
       <span id="min1">0</span>
       <span id="min2">0</span>
