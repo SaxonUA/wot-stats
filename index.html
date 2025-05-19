@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Таймер з реалістичним віддзеркаленням</title>
+  <title>Таймер із темним переливчастим віддзеркаленням</title>
   <style>
     html, body {
       margin: 0;
@@ -22,6 +22,7 @@
       transform: translateY(-50%);
     }
 
+    /* Основний таймер */
     .timer-text {
       font-size: 160px;
       background: linear-gradient(270deg, orange, black, orange);
@@ -32,12 +33,7 @@
       text-shadow: 0 0 30px orange;
     }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
+    /* Віддзеркалення */
     .reflection-container {
       display: flex;
       flex-direction: column;
@@ -46,23 +42,38 @@
 
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.15;
-      filter: blur(2px) grayscale(100%);
+      opacity: 0.4;
+      filter: blur(2px);
       margin-top: -10px;
       line-height: 1;
       height: auto;
       pointer-events: none;
-      color: rgba(0, 0, 0, 0.4);
-      -webkit-text-fill-color: rgba(0, 0, 0, 0.4);
-      background: none;
+      font-size: 160px;
+      background: linear-gradient(270deg, #111, #666, #111);
+      background-size: 600% 600%;
+      animation: reflectionShift 5s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       text-shadow: none;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes reflectionShift {
+      0% { background-position: 100% 50%; }
+      50% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
     }
   </style>
 </head>
 <body>
   <div class="wrapper reflection-container">
     <div class="timer-text" id="timer">03:00</div>
-    <div class="timer-text reflection" id="reflection">03:00</div>
+    <div class="reflection" id="reflection">03:00</div>
   </div>
 
   <script>
