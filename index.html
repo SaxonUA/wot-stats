@@ -12,17 +12,18 @@
       background: transparent;
       overflow: hidden;
       font-family: 'Arial Black', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .wrapper {
-      position: relative;
-      width: 800px;
-      margin: auto;
-      top: 50%;
-      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
 
-    /* Верхній таймер */
     .timer-text {
       font-size: 160px;
       background: linear-gradient(270deg, orange, white, orange);
@@ -31,28 +32,21 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 30px orange;
-    }
-
-    /* Віддзеркалення */
-    .reflection-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin-top: 30px; /* Опустили трохи вниз */
+      line-height: 1;
     }
 
     .reflection {
+      font-size: 160px;
       transform: scaleY(-1);
       opacity: 0.3;
       filter: blur(2px);
-      margin-top: -10px;
-      line-height: 1;
-      height: auto;
-      pointer-events: none;
-      font-size: 160px;
-      color: black;
+      margin-top: -20px; /* Підняли до стику з таймером */
       -webkit-text-fill-color: black;
-      background: none;
+      color: black;
       text-shadow: none;
+      line-height: 1;
+      pointer-events: none;
     }
 
     @keyframes gradientShift {
@@ -63,7 +57,7 @@
   </style>
 </head>
 <body>
-  <div class="wrapper reflection-container">
+  <div class="wrapper">
     <div class="timer-text" id="timer">03:00</div>
     <div class="reflection" id="reflection">03:00</div>
   </div>
