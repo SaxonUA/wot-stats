@@ -2,51 +2,63 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Таймер з біло-помаранчевим градієнтом</title>
+  <title>SAxON Timer</title>
   <style>
     html, body {
       margin: 0;
-      padding: 0;
-      width: 100%;
+      background: #fff;
       height: 100%;
-      background: transparent;
-      overflow: hidden;
-      font-family: 'Arial Black', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
+      font-family: 'Courier New', monospace;
     }
 
     .wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0;
+      gap: 10px;
     }
 
-    .timer-text {
-      font-size: 160px;
+    .line, .reflection {
+      display: flex;
+      font-size: 120px;
+      font-weight: bold;
+    }
+
+    .line span, .reflection span {
+      width: 90px;
+      text-align: center;
+      display: inline-block;
+    }
+
+    /* Верхній напис SAxON */
+    .line span {
       background: linear-gradient(270deg, orange, white, orange);
       background-size: 600% 600%;
-      animation: gradientShift 5s ease infinite;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px orange;
-      margin-top: 30px; /* Опустили трохи вниз */
-      line-height: 1;
+      animation: gradientShift 6s ease infinite;
+      text-shadow: 0 0 15px orange;
     }
 
+    /* Дзеркальне відображення таймера */
     .reflection {
-      font-size: 160px;
       transform: scaleY(-1);
       opacity: 0.3;
       filter: blur(2px);
-      margin-top: -20px; /* Підняли до стику з таймером */
-      -webkit-text-fill-color: black;
+    }
+
+    .reflection span {
       color: black;
+      -webkit-text-fill-color: black;
+      background: none;
       text-shadow: none;
-      line-height: 1;
-      pointer-events: none;
+    }
+
+    .blink {
+      transition: opacity 0.2s ease;
     }
 
     @keyframes gradientShift {
@@ -58,28 +70,55 @@
 </head>
 <body>
   <div class="wrapper">
-    <div class="timer-text" id="timer">03:00</div>
-    <div class="reflection" id="reflection">03:00</div>
+    <!-- Верхній текст SAxON -->
+    <div class="line" id="main">
+      <span>S</span>
+      <span>A</span>
+      <span id="blink-x" class="blink">x</span>
+      <span>O</span>
+      <span>N</span>
+    </div>
+
+    <!-- Віддзеркалення таймера -->
+    <div class="reflection" id="mirror">
+      <span id="min1">0</span>
+      <span id="min2">0</span>
+      <span id="blink-colon" class="blink">:</span>
+      <span id="sec1">0</span>
+      <span id="sec2">0</span>
+    </div>
   </div>
 
   <script>
     let duration = 180;
-    const timerEl = document.getElementById('timer');
-    const reflectionEl = document.getElementById('reflection');
+    let showBlink = true;
+
+    const min1 = document.getElementById("min1");
+    const min2 = document.getElementById("min2");
+    const sec1 = document.getElementById("sec1");
+    const sec2 = document.getElementById("sec2");
+
+    const blinkX = document.getElementById("blink-x");
+    const blinkColon = document.getElementById("blink-colon");
 
     function updateTimer() {
       const minutes = String(Math.floor(duration / 60)).padStart(2, '0');
       const seconds = String(duration % 60).padStart(2, '0');
-      const timeText = `${minutes}:${seconds}`;
-      timerEl.textContent = timeText;
-      reflectionEl.textContent = timeText;
+
+      min1.textContent = minutes[0];
+      min2.textContent = minutes[1];
+      sec1.textContent = seconds[0];
+      sec2.textContent = seconds[1];
+
+      // Синхронне блимання
+      showBlink = !showBlink;
+      const opacity = showBlink ? '1' : '0';
+      blinkX.style.opacity = opacity;
+      blinkColon.style.opacity = opacity;
 
       if (duration > 0) {
         duration--;
         setTimeout(updateTimer, 1000);
-      } else {
-        timerEl.textContent = "00:00";
-        reflectionEl.textContent = "00:00";
       }
     }
 
