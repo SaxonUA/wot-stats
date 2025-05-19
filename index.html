@@ -33,7 +33,6 @@
       display: inline-block;
     }
 
-    /* Статичні літери SAON з градієнтом */
     .line span:not(#blink-x) {
       background: linear-gradient(270deg, orange, white, orange);
       background-size: 600% 600%;
@@ -43,33 +42,26 @@
       text-shadow: 0 0 15px orange;
     }
 
-    /* Літера x — блимає */
     #blink-x {
       color: orange;
+      opacity: 0.7;
       transition: opacity 0.3s ease;
     }
 
-    /* Дзеркальне відображення */
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.6;
+      opacity: 0.75;
       filter: blur(2px);
       margin-top: -25px;
     }
 
     .reflection span {
-      color: rgba(0, 0, 0, 0.85);
-      -webkit-text-fill-color: rgba(0, 0, 0, 0.85);
+      color: rgba(0, 0, 0, 1);
+      -webkit-text-fill-color: rgba(0, 0, 0, 1);
       background: none;
-      /* Біла окантовка */
-      text-shadow:
-        -1px -1px 0 white,
-         1px -1px 0 white,
-        -1px  1px 0 white,
-         1px  1px 0 white;
+      text-shadow: none;
     }
 
-    /* Блимання */
     .blink {
       animation: blinkFade 1s infinite;
     }
