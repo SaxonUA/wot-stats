@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>SAxON Timer</title>
   <style>
     html, body {
@@ -18,7 +18,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px; /* менша відстань між текстом і таймером */
+      line-height: 1;
     }
 
     .line, .reflection {
@@ -33,7 +33,8 @@
       display: inline-block;
     }
 
-    .line span {
+    /* Статичні літери SAON з градієнтом */
+    .line span:not(#blink-x) {
       background: linear-gradient(270deg, orange, white, orange);
       background-size: 600% 600%;
       -webkit-background-clip: text;
@@ -42,10 +43,18 @@
       text-shadow: 0 0 15px orange;
     }
 
+    /* Літера x — помаранчева, блимає */
+    #blink-x {
+      color: orange;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Дзеркальне відображення */
     .reflection {
       transform: scaleY(-1);
       opacity: 0.6;
       filter: blur(2px);
+      margin-top: -25px;
     }
 
     .reflection span {
@@ -55,8 +64,14 @@
       text-shadow: none;
     }
 
+    /* Блимання */
     .blink {
-      transition: opacity 0.1s linear;
+      animation: blinkFade 1s infinite;
+    }
+
+    @keyframes blinkFade {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     @keyframes gradientShift {
@@ -68,7 +83,7 @@
 </head>
 <body>
   <div class="wrapper">
-    <!-- Верхній напис -->
+    <!-- Верхній напис SAxON -->
     <div class="line">
       <span>S</span>
       <span>A</span>
@@ -89,14 +104,13 @@
 
   <script>
     let duration = 180;
+
     const min1 = document.getElementById("min1");
     const min2 = document.getElementById("min2");
     const sec1 = document.getElementById("sec1");
     const sec2 = document.getElementById("sec2");
-    const blinkX = document.getElementById("blink-x");
-    const blinkColon = document.getElementById("blink-colon");
 
-    function updateTimer() {
+    function updateTimeDisplay() {
       const minutes = String(Math.floor(duration / 60)).padStart(2, '0');
       const seconds = String(duration % 60).padStart(2, '0');
 
@@ -104,23 +118,15 @@
       min2.textContent = minutes[1];
       sec1.textContent = seconds[0];
       sec2.textContent = seconds[1];
-
-      // Синхронне блимання точно в такт
-      blinkX.style.opacity = '0';
-      blinkColon.style.opacity = '0';
-
-      setTimeout(() => {
-        blinkX.style.opacity = '1';
-        blinkColon.style.opacity = '1';
-      }, 500);
-
-      if (duration > 0) {
-        duration--;
-        setTimeout(updateTimer, 1000);
-      }
     }
 
-    updateTimer();
+    function tick() {
+      updateTimeDisplay();
+      if (duration > 0) duration--;
+    }
+
+    updateTimeDisplay();
+    setInterval(tick, 1000);
   </script>
 </body>
 </html>
