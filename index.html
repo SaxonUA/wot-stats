@@ -18,7 +18,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 2px; /* менша відстань між текстом і таймером */
     }
 
     .line, .reflection {
@@ -33,7 +33,6 @@
       display: inline-block;
     }
 
-    /* Верхній напис SAxON */
     .line span {
       background: linear-gradient(270deg, orange, white, orange);
       background-size: 600% 600%;
@@ -43,7 +42,6 @@
       text-shadow: 0 0 15px orange;
     }
 
-    /* Дзеркальне відображення чорним кольором */
     .reflection {
       transform: scaleY(-1);
       opacity: 0.6;
@@ -58,7 +56,7 @@
     }
 
     .blink {
-      transition: opacity 0.2s ease;
+      transition: opacity 0.1s linear;
     }
 
     @keyframes gradientShift {
@@ -71,7 +69,7 @@
 <body>
   <div class="wrapper">
     <!-- Верхній напис -->
-    <div class="line" id="main">
+    <div class="line">
       <span>S</span>
       <span>A</span>
       <span id="blink-x" class="blink">x</span>
@@ -79,8 +77,8 @@
       <span>N</span>
     </div>
 
-    <!-- Віддзеркалення -->
-    <div class="reflection" id="mirror">
+    <!-- Віддзеркалення таймера -->
+    <div class="reflection">
       <span id="min1">0</span>
       <span id="min2">0</span>
       <span id="blink-colon" class="blink">:</span>
@@ -91,13 +89,10 @@
 
   <script>
     let duration = 180;
-    let showBlink = true;
-
     const min1 = document.getElementById("min1");
     const min2 = document.getElementById("min2");
     const sec1 = document.getElementById("sec1");
     const sec2 = document.getElementById("sec2");
-
     const blinkX = document.getElementById("blink-x");
     const blinkColon = document.getElementById("blink-colon");
 
@@ -110,11 +105,14 @@
       sec1.textContent = seconds[0];
       sec2.textContent = seconds[1];
 
-      // Синхронне блимання
-      showBlink = !showBlink;
-      const opacity = showBlink ? '1' : '0';
-      blinkX.style.opacity = opacity;
-      blinkColon.style.opacity = opacity;
+      // Синхронне блимання точно в такт
+      blinkX.style.opacity = '0';
+      blinkColon.style.opacity = '0';
+
+      setTimeout(() => {
+        blinkX.style.opacity = '1';
+        blinkColon.style.opacity = '1';
+      }, 500);
 
       if (duration > 0) {
         duration--;
