@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <title>Прозорий таймер</title>
+  <title>Таймер без рамки</title>
   <style>
     html, body {
       margin: 0;
@@ -26,37 +26,14 @@
       position: relative;
       width: 100%;
       height: 180px;
-      border-radius: 20px;
       background: transparent;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 0 30px orange;
-    }
-
-    .progress-frame {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      border: 4px solid orange;
-      border-radius: 20px;
-      box-shadow: 0 0 20px orange;
-      z-index: 2;
-      pointer-events: none;
     }
 
     .progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      background: rgba(255, 165, 0, 0.15); /* прозорий помаранчевий */
-      border-radius: 20px 0 0 20px;
-      z-index: 1;
-      width: 0%;
-      transition: width 1s linear;
+      display: none; /* Вимкнено, бо рамки та бар видалені */
     }
 
     .timer-text {
@@ -64,14 +41,14 @@
       background: linear-gradient(45deg, orange, black);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 15px orange;
-      z-index: 3;
+      text-shadow: 0 0 20px orange;
+      z-index: 2;
     }
 
     .reflection {
       transform: scaleY(-1);
-      opacity: 0.2;
-      filter: blur(6px);
+      opacity: 0.5; /* Яскравіше */
+      filter: blur(2px); /* Менше розмиття */
       position: absolute;
       top: 100%;
       width: 100%;
@@ -86,8 +63,6 @@
 <body>
   <div class="wrapper">
     <div class="timer-box">
-      <div class="progress-fill" id="progress"></div>
-      <div class="progress-frame"></div>
       <div class="timer-text" id="timer">03:00</div>
     </div>
     <div class="timer-box reflection">
@@ -99,7 +74,6 @@
     let duration = 180;
     const timerEl = document.getElementById('timer');
     const reflectionEl = document.getElementById('reflection');
-    const progressEl = document.getElementById('progress');
     const total = duration;
 
     function updateTimer() {
@@ -109,16 +83,12 @@
       timerEl.textContent = timeText;
       reflectionEl.textContent = timeText;
 
-      const percent = ((total - duration) / total) * 100;
-      progressEl.style.width = `${percent}%`;
-
       if (duration > 0) {
         duration--;
         setTimeout(updateTimer, 1000);
       } else {
         timerEl.textContent = "00:00";
         reflectionEl.textContent = "00:00";
-        progressEl.style.width = `100%`;
       }
     }
 
