@@ -22,7 +22,7 @@
       position: relative;
     }
 
-    .line, .reflection {
+    .line {
       display: flex;
       font-size: 120px;
       font-weight: bold;
@@ -30,27 +30,20 @@
       z-index: 2;
     }
 
-    .line span, .reflection span {
+    .line span {
       width: 90px;
       text-align: center;
       display: inline-block;
-    }
-
-    /* Статичні літери SAON */
-    .line span {
       color: #000000;
       text-shadow:
         0 0 5px #4b0082,
         0 0 10px #4b0082;
     }
 
-    /* Літера x — блимає з неоном */
     #blink-x {
-      color: #000000;
       animation: blinkFade 1s steps(1, start) infinite;
     }
 
-    /* Овальна тінь */
     .line::after {
       content: '';
       position: absolute;
@@ -65,21 +58,24 @@
       z-index: 1;
     }
 
-    /* Віддзеркалення таймера */
     .reflection {
-      transform: scaleY(-1) skewX(-10deg);
-      opacity: 0.75;
-      filter: blur(2px);
+      display: flex;
+      font-size: 120px;
+      font-weight: bold;
+      transform: skewX(-10deg) translateY(20px);
+      opacity: 0.6;
+      filter: blur(1.5px);
       margin-top: -40px;
+      z-index: 1;
     }
 
     .reflection span {
-      color: rgba(0, 0, 0, 1);
-      background: none;
-      text-shadow: none;
+      width: 90px;
+      text-align: center;
+      display: inline-block;
+      color: rgba(0, 0, 0, 0.7);
     }
 
-    /* Блимання */
     .blink {
       animation: blinkFade 1s steps(1, start) infinite;
     }
@@ -101,18 +97,18 @@
       <span>N</span>
     </div>
 
-    <!-- Віддзеркалення таймера -->
+    <!-- Таймер (тінь), цифри точно вирівняні -->
     <div class="reflection">
       <span id="min1">0</span>
-      <span id="min2">0</span>
+      <span id="min2">2</span>
       <span id="blink-colon" class="blink">:</span>
-      <span id="sec1">0</span>
-      <span id="sec2">0</span>
+      <span id="sec1">5</span>
+      <span id="sec2">6</span>
     </div>
   </div>
 
   <script>
-    let duration = 180;
+    let duration = 176;
 
     const min1 = document.getElementById("min1");
     const min2 = document.getElementById("min2");
