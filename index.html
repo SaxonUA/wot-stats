@@ -1,223 +1,138 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8" />
-  <title>Рембо Челендж</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>SAxON Timer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: url('РЕМБО САКСОН (1).png') no-repeat center/cover;
-      font-family: 'Arial Black', sans-serif;
-      color: #fff;
-      text-align: center;
+    html, body {
       margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .overlay {
-      padding: 25px 50px;
-      margin: auto;
       background: transparent;
-      border-radius: 30px;
-      width: fit-content;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .damage-block {
+    .wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 40px;
+      line-height: 1;
+      position: relative;
     }
 
-    .label {
-      font-size: 40px;
-      color: orange;
-      font-family: 'Orbitron', sans-serif;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
-      margin: 0;
-    }
-
-    .flip-damage .flip-clock-wrapper {
-      background: rgba(0, 0, 0, 0.5);
-      border: 2px solid orange;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255, 140, 0, .6);
-      display: inline-block;
-      transition: box-shadow 0.3s, border-color 0.3s;
-    }
-
-    .flip-damage.increase .flip-clock-wrapper {
-      border-color: lime;
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.9);
-    }
-
-    .flip-damage.decrease .flip-clock-wrapper {
-      border-color: red;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
-    }
-
-    .note {
-      font-size: 25px;
-      font-weight: bold;
-      margin: 5px 0;
-    }
-
-    .note-gradient {
-      background: linear-gradient(270deg, orange, white);
-      background-size: 400% 50%;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: grad 6s ease infinite;
-    }
-
-    @keyframes grad {
-      0% { background-position: 0 50% }
-      50% { background-position: 100% 50% }
-      100% { background-position: 0 50% }
-    }
-
-    .flip-clock-wrapper ul li a div div.inn {
-      font-size: 70px;
-    }
-
-    .countdown-wrapper {
-      margin-top: 60px;
-    }
-
-    .rembo-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 45px;
-      color: orange;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, .7), 0 0 10px rgba(255, 140, 0, .8);
-    }
-
-    #damage-clock {
+    .line {
       display: flex;
-      justify-content: center;
+      font-family: 'Russo One', sans-serif;
+      font-size: 120px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .line span {
+      width: 90px;
+      text-align: center;
+      display: inline-block;
+      color: #000000;
+      text-shadow:
+        0 0 5px #4b0082,
+        0 0 10px #4b0082;
+    }
+
+    #blink-x {
+      animation: blinkFade 1s steps(1, start) infinite;
+    }
+
+    .line::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110%;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 50%;
+      filter: blur(6px);
+      z-index: 1;
+    }
+
+    .reflection {
+      display: flex;
+      font-family: 'Russo One', sans-serif;
+      font-size: 120px;
+      transform: skewX(-10deg) translateY(20px);
+      opacity: 0.6;
+      filter: blur(1.5px);
+      margin-top: -40px;
+      z-index: 1;
+    }
+
+    .reflection span {
+      width: 90px;
+      text-align: center;
+      display: inline-block;
+      color: rgba(0, 0, 0, 0.9
+      );
+    }
+
+    .blink {
+      animation: blinkFade 1s steps(1, start) infinite;
+    }
+
+    @keyframes blinkFade {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
   </style>
 </head>
 <body>
-  <div class="overlay">
-    <div class="damage-block">
-      <div class="label">ЗАЛИШИЛОСЬ</div>
-      <div class="label">НАСТРІЛЯТИ:</div>
-      <div class="flip-damage"><div id="damage-clock"></div></div>
+  <div class="wrapper">
+    <!-- Верхній напис SAxON -->
+    <div class="line">
+      <span>S</span>
+      <span>A</span>
+      <span id="blink-x" class="blink">x</span>
+      <span>O</span>
+      <span>N</span>
     </div>
 
-    <div class="note note-gradient">+250 урону за 1 лайк YouTube</div>
-    <div class="note note-gradient">+1 урон за 1 "тап" в TikTok</div>
-    <div class="note note-gradient">+25 урону за 1 грн</div>
-
-    <div class="countdown-wrapper">
-      <div class="flip-clock-wrapper">
-        <div class="rembo-title">До кінця челенджу</div>
-        <div class="rembo-title">залишилось:</div>
-        <div id="flip-clock"></div>
-      </div>
+    <!-- Таймер (під кутом) -->
+    <div class="reflection">
+      <span id="min1">0</span>
+      <span id="min2">2</span>
+      <span id="blink-colon" class="blink">:</span>
+      <span id="sec1">5</span>
+      <span id="sec2">6</span>
     </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
   <script>
-    const SHEET_ID = "17phnEn-NW-OnrZg4DcW65r-Xoq6ScsdVjS5yL0SS3fk";
-    const GID = "1630188258";
+    let duration = 176;
 
-    async function fetchSingleCell(range) {
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?gid=${GID}&range=${range}&tqx=out:json`;
-      const res = await fetch(url);
-      const txt = await res.text();
-      const json = JSON.parse(txt.substring(47).slice(0, -2));
-      return json.table.rows[0].c[0]?.v || 0;
+    const min1 = document.getElementById("min1");
+    const min2 = document.getElementById("min2");
+    const sec1 = document.getElementById("sec1");
+    const sec2 = document.getElementById("sec2");
+
+    function updateTimeDisplay() {
+      const minutes = String(Math.floor(duration / 60)).padStart(2, '0');
+      const seconds = String(duration % 60).padStart(2, '0');
+
+      min1.textContent = minutes[0];
+      min2.textContent = minutes[1];
+      sec1.textContent = seconds[0];
+      sec2.textContent = seconds[1];
     }
 
-    $(async function () {
-      const flipClock = $('#flip-clock').FlipClock(getTimeLeftKyiv(), {
-        clockFace: 'HourlyCounter', countdown: true, autoStart: true
-      });
-      $('.flip-clock-divider.hours .flip-clock-label').text('Години');
-      $('.flip-clock-divider.minutes .flip-clock-label').text('Хвилини');
-      $('.flip-clock-divider.seconds .flip-clock-label').text('Секунди');
-
-      setInterval(() => {
-        flipClock.setTime(getTimeLeftKyiv());
-      }, 60000);
-
-      const damageClock = $('#damage-clock').FlipClock(0, { clockFace: 'Counter', autoStart: false });
-      let currentDamage = 0;
-      let animationInterval = null;
-      let animationInProgress = false;
-
-      async function animateDamage(newValue) {
-        const container = document.querySelector('.flip-damage');
-
-        if (animationInterval) {
-          clearInterval(animationInterval);
-          animationInterval = null;
-          animationInProgress = false;
-          container.classList.remove('increase', 'decrease');
-        }
-
-        if (newValue === currentDamage) return;
-
-        const step = newValue > currentDamage ? 1 : -1;
-        const totalSteps = Math.abs(newValue - currentDamage);
-        const maxDuration = 1000;
-        const minDelay = 5;
-        const delay = Math.max(minDelay, maxDuration / totalSteps);
-
-        if (step > 0) {
-          container.classList.add('increase');
-          container.classList.remove('decrease');
-        } else {
-          container.classList.add('decrease');
-          container.classList.remove('increase');
-        }
-
-        animationInProgress = true;
-        animationInterval = setInterval(() => {
-          currentDamage += step;
-          damageClock.setTime(currentDamage);
-
-          if (currentDamage === newValue) {
-            clearInterval(animationInterval);
-            animationInterval = null;
-            animationInProgress = false;
-            container.classList.remove('increase', 'decrease');
-          }
-        }, delay);
-      }
-
-      async function updateDamage() {
-        try {
-          let raw = await fetchSingleCell("C14");
-          raw = raw.toString().replace(/\s/g, '');
-          const value = parseInt(raw || 0);
-          animateDamage(value);
-        } catch (e) {
-          console.error("Помилка оновлення дамага:", e);
-        }
-      }
-
-      await updateDamage();
-      setInterval(updateDamage, 10000);
-    });
-
-    function getTimeLeftKyiv() {
-      const now = new Date();
-      const kyiv = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Kyiv" }));
-      const end = new Date(kyiv);
-      end.setHours(23, 59, 59, 999);
-      return Math.floor((end - kyiv) / 1000);
+    function tick() {
+      updateTimeDisplay();
+      if (duration > 0) duration--;
     }
+
+    updateTimeDisplay();
+    setInterval(tick, 1000);
   </script>
 </body>
 </html>
